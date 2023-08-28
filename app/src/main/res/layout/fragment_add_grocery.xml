@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="grocery"
+            type="net.softglobe.groceryplanner.model.Grocery" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.AddGroceryFragment"
+        android:layout_margin="8dp">
+
+
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintTop_toTopOf="parent"
+            android:hint="Item Name"
+            android:text="@{grocery.name}"/>
+
+        <EditText
+            android:id="@+id/et_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintTop_toBottomOf="@id/et_name"
+            android:hint="Item Description"
+            android:text="@{grocery.description}"/>
+
+        <EditText
+            android:id="@+id/et_qty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            app:layout_constraintTop_toBottomOf="@id/et_desc"
+            android:hint="Quantity"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/et_unit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintTop_toBottomOf="@id/et_desc"
+            android:hint="Unit (kg, gram, litre)"
+            app:layout_constraintStart_toEndOf="@id/et_qty"
+            android:text="@{grocery.unit}"/>
+
+        <EditText
+            android:id="@+id/et_kept_at"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintTop_toBottomOf="@id/et_qty"
+            android:hint="Where it is kept"
+            android:text="@{grocery.storedAt}"/>
+
+        <EditText
+            android:id="@+id/et_low_stock_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            app:layout_constraintTop_toBottomOf="@id/et_kept_at"
+            android:hint="Low stock indication value" />
+
+        <EditText
+            android:id="@+id/et_edit_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintTop_toBottomOf="@id/et_low_stock_value"
+            android:hint="Edit Info" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_cancel"
+            app:layout_constraintTop_toBottomOf="@id/et_edit_info"
+            android:layout_marginEnd="3dp" />
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            app:layout_constraintStart_toEndOf="@id/btn_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btn_save"
+            android:layout_marginStart="3dp" />
+
+        <TextView
+            android:id="@+id/mod_title"
+            style="@style/grocery_item_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Last Modifications"
+            app:layout_constraintTop_toBottomOf="@id/btn_save"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_modifications"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="353dp"
+            tools:listitem="@layout/item_modification"
+            app:layout_constraintTop_toBottomOf="@id/mod_title"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

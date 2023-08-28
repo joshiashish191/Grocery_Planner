@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Grocery Planner</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="delete_warning">Do you really want to delete this record? All of its modification details will also be deleted.</string>
+</resources>
