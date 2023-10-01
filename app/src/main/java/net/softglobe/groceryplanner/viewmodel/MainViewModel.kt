@@ -1,12 +1,10 @@
 package net.softglobe.groceryplanner.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.model.Grocery
 import net.softglobe.groceryplanner.model.GroceryDao
@@ -15,7 +13,6 @@ import net.softglobe.groceryplanner.model.Modification
 import net.softglobe.groceryplanner.model.Repository
 
 class MainViewModel(context: Context) : ViewModel() {
-    private val TAG: String = "MainViewModel"
     private var groceryDao : GroceryDao
     private var repository : Repository
 
@@ -50,4 +47,8 @@ class MainViewModel(context: Context) : ViewModel() {
     }
 
     suspend fun getGroceryItem(id : Int) : Grocery = repository.getGroceryItemById(id)
+
+    fun searchGroceryListByQuery(query : String) : LiveData<List<Grocery>> {
+        return repository.searchGroceryListByQuery(query)
+    }
 }

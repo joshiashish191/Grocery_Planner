@@ -5,12 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentGroceryListBinding
+import net.softglobe.groceryplanner.model.Grocery
 import net.softglobe.groceryplanner.model.adapters.GroceryListAdapter
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
@@ -30,16 +32,32 @@ class GroceryListFragment : Fragment() {
 
     private fun initView() {
         viewModel.getGroceryList().observe(viewLifecycleOwner) {
-            binding.rvGroceryList.apply {
-                adapter = GroceryListAdapter(requireActivity(), viewModel)
-                layoutManager = LinearLayoutManager(activity?.baseContext!!)
-                (binding.rvGroceryList.adapter as GroceryListAdapter).submitList(it)
-            }
+            setRecyclerViewForGroceryList(it)
         }
 
         binding.btnAddRecord.setOnClickListener {
             findNavController().navigate(R.id.action_groceryListFragment_to_addGroceryFragment)
         }
 
+        binding.groceryItemSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                viewModel.searchGroceryListByQuery(newText).observe(viewLifecycleOwner)  {result ->
+                    setRecyclerViewForGroceryList(result)
+                }
+                return false
+            }
+        })
+    }
+
+    private fun setRecyclerViewForGroceryList(it: List<Grocery>?) {
+        binding.rvGroceryList.apply {
+            adapter = GroceryListAdapter(requireActivity(), viewModel)
+            layoutManager = LinearLayoutManager(activity?.baseContext!!)
+            (binding.rvGroceryList.adapter as GroceryListAdapter).submitList(it)
+        }
     }
 }
