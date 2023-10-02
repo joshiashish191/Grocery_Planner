@@ -2,8 +2,6 @@ package net.softglobe.groceryplanner.view
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,12 +21,12 @@ import net.softglobe.groceryplanner.model.Modification
 import net.softglobe.groceryplanner.model.adapters.ModificationsListAdapter
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
+import java.text.DecimalFormat
 import java.util.Date
 
 
 class AddGroceryFragment : Fragment() {
 
-    private val TAG: String = "AddGroceryFragment"
     private lateinit var binding: FragmentAddGroceryBinding
     private lateinit var currentGroceryItem : Grocery
     var id: Int? = null
@@ -51,9 +49,7 @@ class AddGroceryFragment : Fragment() {
             id = it.getInt("id")
         }
 
-        if (id == null) {
-            binding.etEditInfo.visibility = View.GONE
-        } else {
+        if (id != null) {
             binding.modTitle.visibility = View.VISIBLE
             binding.rvModifications.visibility = View.VISIBLE
             lifecycleScope.launch {
@@ -64,9 +60,7 @@ class AddGroceryFragment : Fragment() {
                     binding.etLowStockValue.setText(item.lowStockValue.toString())
                 binding.etQty.setText(item.quantity.toString())
             }
-            Log.d(TAG, "id: $id")
             viewModel.getModificationsList(id!!).observe(viewLifecycleOwner) {
-                Log.d(TAG, "ModificationsList $it")
                 binding.rvModifications.apply {
                     adapter = ModificationsListAdapter()
                     layoutManager = LinearLayoutManager(activity?.baseContext!!)
@@ -103,15 +97,8 @@ class AddGroceryFragment : Fragment() {
             val unit = binding.etUnit.text.toString()
             val keptAt = binding.etKeptAt.text.toString()
             val lowStockValue = binding.etLowStockValue.text.toString()
-            val modificationMsg = binding.etEditInfo.text.toString()
 
-            if (!currentGroceryItem.name.equals(name) ||
-                !currentGroceryItem.description.equals(description) ||
-                isQuantityModified(quantity) ||
-                !currentGroceryItem.unit.equals(unit) ||
-                !currentGroceryItem.storedAt.equals(keptAt) ||
-                isLowStockValueModified(lowStockValue) ||
-                !modificationMsg.isNullOrBlank()
+            if (isAnyFieldModified(name, description, quantity, unit, keptAt, lowStockValue)
             ) {
                 showConfirmChangesDialog()
             } else
@@ -119,6 +106,22 @@ class AddGroceryFragment : Fragment() {
         } else {
             findNavController().popBackStack()
         }
+    }
+
+    private fun isAnyFieldModified(
+        name: String,
+        description: String,
+        quantity: String,
+        unit: String,
+        keptAt: String,
+        lowStockValue: String,
+    ): Boolean {
+        return !currentGroceryItem.name.equals(name) ||
+                 !currentGroceryItem.description.equals(description) ||
+                isQuantityModified(quantity) ||
+                 !currentGroceryItem.unit.equals(unit) ||
+                 !currentGroceryItem.storedAt.equals(keptAt) ||
+                isLowStockValueModified(lowStockValue)
     }
 
     private fun isLowStockValueModified(lowStockValue :String): Boolean {
@@ -157,7 +160,8 @@ class AddGroceryFragment : Fragment() {
         val unit = binding.etUnit.text.toString().trim()
         val keptAt = binding.etKeptAt.text.toString().trim()
         val lowStockValue = binding.etLowStockValue.text.toString().trim()
-        var modificationMsg = binding.etEditInfo.text.toString().trim()
+        val modificationMsg: String
+
         if (name.isBlank()) {
             Toast.makeText(activity, "Please enter Item Name", Toast.LENGTH_SHORT).show()
         } else if (quantity.isBlank()) {
@@ -186,8 +190,7 @@ class AddGroceryFragment : Fragment() {
                     Modification(Date(), modificationMsg)
                 )
             } else {
-                if (TextUtils.isEmpty(modificationMsg))
-                    modificationMsg = "No Info provided"
+                modificationMsg = trackModificationsAndCreateEditMessage(name, description, quantity, unit, keptAt, lowStockValue)
                 viewModel.insertGroceryItem(
                     Grocery(
                         name,
@@ -206,5 +209,50 @@ class AddGroceryFragment : Fragment() {
             findNavController().popBackStack()
             Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun trackModificationsAndCreateEditMessage(
+        name: String,
+        description: String,
+        quantity: String,
+        unit: String,
+        keptAt: String,
+        lowStockValue: String
+    ): String {
+        var result = ""
+        if (!isAnyFieldModified(name, description, quantity, unit, keptAt, lowStockValue)) {
+            result = "No changes made"
+        } else {
+            if (!currentGroceryItem.name.equals(name))
+                result += "Item name modified ${currentGroceryItem.name} to $name"
+            if (!currentGroceryItem.description.equals(description)) {
+                if (result.isNotBlank())
+                    result += ", "
+                result += "Item description modified ${currentGroceryItem.description} to $description"
+            }
+            if (isQuantityModified(quantity)) {
+                if (result.isNotBlank())
+                    result += ", "
+                val format = DecimalFormat("0.#")
+                result += "Item quantity modified ${format.format(currentGroceryItem.quantity)} to ${format.format(quantity.toDouble())}"
+            }
+            if (!currentGroceryItem.unit.equals(unit)) {
+                if (result.isNotBlank())
+                    result += ", "
+                result += "Item unit modified ${currentGroceryItem.unit} to $unit"
+            }
+            if (!currentGroceryItem.storedAt.equals(keptAt)) {
+                if (result.isNotBlank())
+                    result += ", "
+                result += "Item stored location modified ${currentGroceryItem.storedAt} to $keptAt"
+            }
+            if (isLowStockValueModified(lowStockValue)) {
+                if (result.isNotBlank())
+                    result += ", "
+                val format = DecimalFormat("0.#")
+                result += "Item low stock value modified ${format.format(currentGroceryItem.lowStockValue)} to ${format.format(lowStockValue.toDouble())}"
+            }
+        }
+        return result
     }
 }
