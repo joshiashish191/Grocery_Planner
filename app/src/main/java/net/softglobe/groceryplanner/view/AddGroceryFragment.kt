@@ -1,5 +1,6 @@
 package net.softglobe.groceryplanner.view
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -28,6 +30,7 @@ class AddGroceryFragment : Fragment() {
 
     private val TAG: String = "AddGroceryFragment"
     private lateinit var binding: FragmentAddGroceryBinding
+    private lateinit var currentGroceryItem : Grocery
     var id: Int? = null
 
     private val viewModel by viewModels<MainViewModel> { MainViewModelFactory(activity?.baseContext!!) }
@@ -55,6 +58,7 @@ class AddGroceryFragment : Fragment() {
             binding.rvModifications.visibility = View.VISIBLE
             lifecycleScope.launch {
                 val item = viewModel.getGroceryItem(id!!)
+                currentGroceryItem = item
                 binding.grocery = item
                 if (item.lowStockValue != 0.0)
                     binding.etLowStockValue.setText(item.lowStockValue.toString())
@@ -76,27 +80,93 @@ class AddGroceryFragment : Fragment() {
         }
 
         binding.btnCancel.setOnClickListener {
+            checkModificationsOnBackPressed()
+        }
+
+
+        //region Back pressed event logic
+        val onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                checkModificationsOnBackPressed()
+            }
+
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
+        //endregion
+    }
+
+    private fun checkModificationsOnBackPressed() {
+        if (id != null) {
+            val name = binding.etName.text.toString()
+            val description = binding.etDesc.text.toString()
+            val quantity = binding.etQty.text.toString()
+            val unit = binding.etUnit.text.toString()
+            val keptAt = binding.etKeptAt.text.toString()
+            val lowStockValue = binding.etLowStockValue.text.toString()
+            val modificationMsg = binding.etEditInfo.text.toString()
+
+            if (!currentGroceryItem.name.equals(name) ||
+                !currentGroceryItem.description.equals(description) ||
+                isQuantityModified(quantity) ||
+                !currentGroceryItem.unit.equals(unit) ||
+                !currentGroceryItem.storedAt.equals(keptAt) ||
+                isLowStockValueModified(lowStockValue) ||
+                !modificationMsg.isNullOrBlank()
+            ) {
+                showConfirmChangesDialog()
+            } else
+                findNavController().popBackStack()
+        } else {
             findNavController().popBackStack()
         }
     }
 
+    private fun isLowStockValueModified(lowStockValue :String): Boolean {
+        return if (lowStockValue.isBlank()) {
+            currentGroceryItem.lowStockValue  != 0.0
+        } else {
+            currentGroceryItem.lowStockValue != lowStockValue.toDouble()
+        }
+    }
+
+    private fun isQuantityModified(quantity :String): Boolean {
+        return if (quantity.isBlank()) {
+            return true
+        } else {
+            currentGroceryItem.quantity != quantity.toDouble()
+        }
+    }
+
+    private fun showConfirmChangesDialog() {
+        AlertDialog.Builder(activity)
+            .setTitle("Confirm changes")
+            .setMessage("Do you want to save the changes you made?")
+            .setPositiveButton("Yes") {dialog, position ->
+                saveGroceryItem()
+            }
+            .setNegativeButton("No") {dialog, position ->
+                findNavController().popBackStack()
+            }
+            .show()
+    }
+
     private fun saveGroceryItem() {
-        val name = binding.etName.text.toString()
-        val description = binding.etDesc.text.toString()
-        val quantity = binding.etQty.text.toString()
-        val unit = binding.etUnit.text.toString()
-        val keptAt = binding.etKeptAt.text.toString()
-        val lowStockValue = binding.etLowStockValue.text.toString()
-        var modificationMsg = binding.etEditInfo.text.toString()
-        if (name.isNullOrEmpty()) {
+        val name = binding.etName.text.toString().trim()
+        val description = binding.etDesc.text.toString().trim()
+        val quantity = binding.etQty.text.toString().trim()
+        val unit = binding.etUnit.text.toString().trim()
+        val keptAt = binding.etKeptAt.text.toString().trim()
+        val lowStockValue = binding.etLowStockValue.text.toString().trim()
+        var modificationMsg = binding.etEditInfo.text.toString().trim()
+        if (name.isBlank()) {
             Toast.makeText(activity, "Please enter Item Name", Toast.LENGTH_SHORT).show()
-        } else if (quantity.isNullOrEmpty()) {
+        } else if (quantity.isBlank()) {
             Toast.makeText(activity, "Please enter Item Quantity", Toast.LENGTH_SHORT).show()
-        } else if (unit.isNullOrEmpty()) {
+        } else if (unit.isBlank()) {
             Toast.makeText(activity, "Please enter Item Unit", Toast.LENGTH_SHORT).show()
         } else {
             var newLowStockValue = 0.0
-            if (!lowStockValue.isEmpty()) {
+            if (lowStockValue.isNotBlank()) {
                 newLowStockValue = lowStockValue.toDouble()
             }
 
