@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -31,6 +32,11 @@ class GroceryListAdapter(private val mContext: Context, private val viewModel: M
             binding.quantity.text = ""+grocery.quantity+" "+grocery.unit
             if (TextUtils.isEmpty(grocery.description))
                 binding.itemSubtitle.visibility = View.GONE
+            if (grocery.quantity <= grocery.lowStockValue) {
+                binding.lowStockWarning.text = "Only ${grocery.lowStockValue} ${grocery.unit} left"
+                binding.lowStockWarning.visibility = View.VISIBLE
+                binding.quantity.setTextColor(ContextCompat.getColor(mContext, R.color.red))
+            }
         }
     }
 
