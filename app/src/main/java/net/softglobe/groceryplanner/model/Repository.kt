@@ -26,8 +26,12 @@ class Repository(private val groceryDao: GroceryDao) {
         groceryDao.deleteGroceryItem(id)
     }
 
-    suspend fun deleteModifications(id: Int) {
-        groceryDao.deleteModifications(id)
+    suspend fun deleteAllModificationsByGroceryItemId(id: Int) {
+        groceryDao.deleteAllModificationsByGroceryItemId(id)
+    }
+
+    suspend fun deleteSingleModificationEntry(id: Int) {
+        groceryDao.deleteSingleModificationEntry(id)
     }
 
     fun searchGroceryListByQuery(query : String) : LiveData<List<Grocery>> {

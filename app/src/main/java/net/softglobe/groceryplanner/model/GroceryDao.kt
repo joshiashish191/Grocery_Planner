@@ -19,7 +19,10 @@ interface GroceryDao {
     suspend fun deleteGroceryItem(id: Int)
 
     @Query("DELETE FROM Modification WHERE itemId = :id")
-    suspend fun deleteModifications(id : Int)
+    suspend fun deleteAllModificationsByGroceryItemId(id : Int)
+
+    @Query("DELETE FROM Modification WHERE id = :id")
+    suspend fun deleteSingleModificationEntry(id : Int)
 
     @Update
     suspend fun updateGroceryItem(grocery: Grocery)

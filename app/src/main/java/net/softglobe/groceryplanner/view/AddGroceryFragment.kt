@@ -51,6 +51,7 @@ class AddGroceryFragment : Fragment() {
 
         if (id != null) {
             binding.modTitle.visibility = View.VISIBLE
+            binding.clrAllModBtn.visibility = View.VISIBLE
             binding.rvModifications.visibility = View.VISIBLE
             lifecycleScope.launch {
                 val item = viewModel.getGroceryItem(id!!)
@@ -60,9 +61,18 @@ class AddGroceryFragment : Fragment() {
                     binding.etLowStockValue.setText(item.lowStockValue.toString())
                 binding.etQty.setText(item.quantity.toString())
             }
+            val itemId = id
             viewModel.getModificationsList(id!!).observe(viewLifecycleOwner) {
+                if (it.isEmpty()) {
+                    binding.noRecordsTitle.visibility = View.VISIBLE
+                    binding.clrAllModBtn.isEnabled = false
+                }
+                else {
+                    binding.noRecordsTitle.visibility = View.GONE
+                    binding.clrAllModBtn.isEnabled = true
+                }
                 binding.rvModifications.apply {
-                    adapter = ModificationsListAdapter()
+                    adapter = ModificationsListAdapter(itemId!!, viewModel)
                     layoutManager = LinearLayoutManager(activity?.baseContext!!)
                     (binding.rvModifications.adapter as ModificationsListAdapter).submitList(it)
                 }
@@ -75,6 +85,19 @@ class AddGroceryFragment : Fragment() {
 
         binding.btnCancel.setOnClickListener {
             checkModificationsOnBackPressed()
+        }
+
+        binding.clrAllModBtn.setOnClickListener {
+            AlertDialog.Builder(activity)
+                .setTitle("Confirm delete")
+                .setMessage("Do you really want to clear all the modification records? This action can't be undone!")
+                .setPositiveButton("Yes, I confirm") {dialog, position ->
+                    id?.let { id ->
+                        viewModel.deleteAllModificationsByGroceryItemId(id)
+                    }
+                }
+                .setNegativeButton("Cancel") {dialog, position -> }
+                .show()
         }
 
 

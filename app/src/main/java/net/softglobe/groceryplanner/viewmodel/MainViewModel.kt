@@ -42,7 +42,19 @@ class MainViewModel(context: Context) : ViewModel() {
     fun deleteGroceryItem(id : Int) {
         viewModelScope.launch {
             repository.deleteGroceryItem(id)
-            repository.deleteModifications(id)
+            repository.deleteAllModificationsByGroceryItemId(id)
+        }
+    }
+
+    fun deleteSingleModificationEntry(id : Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteSingleModificationEntry(id)
+        }
+    }
+
+    fun deleteAllModificationsByGroceryItemId(id : Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllModificationsByGroceryItemId(id)
         }
     }
 
