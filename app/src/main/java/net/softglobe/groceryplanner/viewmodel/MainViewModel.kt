@@ -63,4 +63,16 @@ class MainViewModel(context: Context) : ViewModel() {
     fun searchGroceryListByQuery(query : String) : LiveData<List<Grocery>> {
         return repository.searchGroceryListByQuery(query)
     }
+
+    fun getSortedGroceryListByName() : LiveData<List<Grocery>> {
+        return repository.getSortedGroceryListByName()
+    }
+
+    fun getSortedGroceryListByDateAdded() : LiveData<List<Grocery>> {
+        return repository.getSortedGroceryListByDateAdded()
+    }
+
+    fun getLowStockGroceryItems() : LiveData<List<Grocery>> {
+        return repository.getLowStockGroceryItems()
+    }
 }

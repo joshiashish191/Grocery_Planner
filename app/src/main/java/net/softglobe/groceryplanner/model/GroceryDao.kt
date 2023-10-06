@@ -35,4 +35,13 @@ interface GroceryDao {
 
     @Query("SELECT * FROM Grocery WHERE name LIKE '%' ||:query|| '%'")
     fun searchGroceryListByQuery(query: String) : LiveData<List<Grocery>>
+
+    @Query("SELECT * FROM Grocery ORDER BY name COLLATE NOCASE ASC")
+    fun getSortedGroceryListByName() : LiveData<List<Grocery>>
+
+    @Query("SELECT * FROM Grocery ORDER BY addedOn DESC")
+    fun getSortedGroceryListByDateAdded() : LiveData<List<Grocery>>
+
+    @Query("SELECT * FROM Grocery WHERE quantity <= lowStockValue")
+    fun getLowStockGroceryItems() : LiveData<List<Grocery>>
 }

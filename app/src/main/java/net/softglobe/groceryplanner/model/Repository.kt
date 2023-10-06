@@ -37,4 +37,16 @@ class Repository(private val groceryDao: GroceryDao) {
     fun searchGroceryListByQuery(query : String) : LiveData<List<Grocery>> {
         return groceryDao.searchGroceryListByQuery(query)
     }
+
+    fun getSortedGroceryListByName() : LiveData<List<Grocery>> {
+        return groceryDao.getSortedGroceryListByName()
+    }
+
+    fun getSortedGroceryListByDateAdded() : LiveData<List<Grocery>> {
+        return groceryDao.getSortedGroceryListByDateAdded()
+    }
+
+    fun getLowStockGroceryItems() : LiveData<List<Grocery>> {
+        return groceryDao.getLowStockGroceryItems()
+    }
 }

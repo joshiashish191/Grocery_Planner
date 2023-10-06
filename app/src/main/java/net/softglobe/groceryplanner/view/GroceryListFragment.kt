@@ -1,5 +1,6 @@
 package net.softglobe.groceryplanner.view
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -7,7 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -71,10 +71,30 @@ class GroceryListFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     R.id.sort -> {
-                        Toast.makeText(activity, "Clicked Sort!", Toast.LENGTH_SHORT).show()
-                    }
-                    R.id.search -> {
-
+                        val sortOptions = arrayOf("Alphabetically", "Date Added", "Only low stock items")
+                        AlertDialog.Builder(activity)
+                            .setTitle("Sort items by")
+                            .setItems(sortOptions) {dialog, position ->
+                                when (position) {
+                                    0 -> {
+                                        //sort items alphabetically by item name
+                                        viewModel.getSortedGroceryListByName().observe(viewLifecycleOwner) {
+                                            setRecyclerViewForGroceryList(it)
+                                        }
+                                    }
+                                    1 -> {
+                                        viewModel.getSortedGroceryListByDateAdded().observe(viewLifecycleOwner) {
+                                            setRecyclerViewForGroceryList(it)
+                                        }
+                                    }
+                                    2 -> {
+                                        viewModel.getLowStockGroceryItems().observe(viewLifecycleOwner) {
+                                            setRecyclerViewForGroceryList(it)
+                                        }
+                                    }
+                                }
+                            }
+                            .show()
                     }
                 }
                 return true
@@ -89,6 +109,10 @@ class GroceryListFragment : Fragment() {
             adapter = GroceryListAdapter(requireActivity(), viewModel)
             layoutManager = LinearLayoutManager(activity?.baseContext!!)
             (binding.rvGroceryList.adapter as GroceryListAdapter).submitList(it)
+            if (it?.isEmpty()!!)
+                binding.noItemsText.visibility = View.VISIBLE
+            else
+                binding.noItemsText.visibility = View.GONE
         }
     }
 }
