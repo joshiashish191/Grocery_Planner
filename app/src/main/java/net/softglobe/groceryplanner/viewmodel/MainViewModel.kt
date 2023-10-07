@@ -10,15 +10,18 @@ import net.softglobe.groceryplanner.model.Grocery
 import net.softglobe.groceryplanner.model.GroceryDao
 import net.softglobe.groceryplanner.model.GroceryDatabase
 import net.softglobe.groceryplanner.model.Modification
+import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.model.Repository
 
 class MainViewModel(context: Context) : ViewModel() {
     private var groceryDao : GroceryDao
     private var repository : Repository
+    private var preferences : Preferences
 
     init {
         groceryDao = GroceryDatabase.getInstance(context).groceryDao
         repository = Repository(groceryDao)
+        preferences = Preferences(context)
     }
 
     fun getGroceryList() : LiveData<List<Grocery>> {
@@ -34,7 +37,9 @@ class MainViewModel(context: Context) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             id = repository.insertGroceryItem(grocery)
             modification.itemId = id.toInt()
-            repository.insertModification(modification)
+            val modificationCount = repository.getModificationsCountByGroceryItemId(id.toInt())
+            if (!preferences.isPaidUser() && modificationCount < preferences.getModificationsRecordsLimit())
+                repository.insertModification(modification)
         }
         return id
     }
@@ -74,5 +79,9 @@ class MainViewModel(context: Context) : ViewModel() {
 
     fun getLowStockGroceryItems() : LiveData<List<Grocery>> {
         return repository.getLowStockGroceryItems()
+    }
+
+    suspend fun getGroceryItemsCount() : Int {
+        return repository.getGroceryItemsCount()
     }
 }

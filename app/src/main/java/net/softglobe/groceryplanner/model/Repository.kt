@@ -49,4 +49,12 @@ class Repository(private val groceryDao: GroceryDao) {
     fun getLowStockGroceryItems() : LiveData<List<Grocery>> {
         return groceryDao.getLowStockGroceryItems()
     }
+
+    suspend fun getGroceryItemsCount() : Int {
+        return groceryDao.getGroceryItemsCount()
+    }
+
+    suspend fun getModificationsCountByGroceryItemId(groceryItemId : Int) : Int {
+        return groceryDao.getModificationsCountByGroceryItemId(groceryItemId)
+    }
 }

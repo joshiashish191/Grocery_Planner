@@ -44,4 +44,11 @@ interface GroceryDao {
 
     @Query("SELECT * FROM Grocery WHERE quantity <= lowStockValue")
     fun getLowStockGroceryItems() : LiveData<List<Grocery>>
+
+    @Query("SELECT COUNT(*) FROM Grocery")
+    suspend fun getGroceryItemsCount() : Int
+
+    @Query("SELECT COUNT(*) FROM Modification WHERE itemId=:groceryItemId")
+    suspend fun getModificationsCountByGroceryItemId(groceryItemId : Int) : Int
+
 }

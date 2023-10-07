@@ -13,11 +13,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentAddGroceryBinding
 import net.softglobe.groceryplanner.model.Grocery
 import net.softglobe.groceryplanner.model.Modification
+import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.model.adapters.ModificationsListAdapter
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
@@ -30,6 +32,8 @@ class AddGroceryFragment : Fragment() {
     private lateinit var binding: FragmentAddGroceryBinding
     private lateinit var currentGroceryItem : Grocery
     var id: Int? = null
+    private lateinit var preferences : Preferences
+    private var totalGroceryItemsCount : Int? = null
 
     private val viewModel by viewModels<MainViewModel> { MainViewModelFactory(activity?.baseContext!!) }
 
@@ -45,6 +49,7 @@ class AddGroceryFragment : Fragment() {
     }
 
     private fun inItView() {
+        preferences = Preferences(activity?.applicationContext!!)
         arguments?.let {
             id = it.getInt("id")
         }
@@ -76,6 +81,10 @@ class AddGroceryFragment : Fragment() {
                     layoutManager = LinearLayoutManager(activity?.baseContext!!)
                     (binding.rvModifications.adapter as ModificationsListAdapter).submitList(it)
                 }
+            }
+        } else {
+            lifecycleScope.launch(Dispatchers.IO) {
+                totalGroceryItemsCount = viewModel.getGroceryItemsCount()
             }
         }
 
@@ -199,6 +208,11 @@ class AddGroceryFragment : Fragment() {
 
             var toastMsg = "Item Added"
             if (id == null) {
+                if (!preferences.isPaidUser()
+                    && totalGroceryItemsCount!! >= preferences.getGroceryRecordsLimit()) {
+                    Toast.makeText(activity, "Limit reached! Need to purchase a paid plan.", Toast.LENGTH_SHORT).show()
+                    return
+                }
                 modificationMsg = "Item Added"
                 viewModel.insertGroceryItem(
                     Grocery(
