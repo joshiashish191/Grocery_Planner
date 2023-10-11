@@ -6,12 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.softglobe.groceryplanner.LoginResponse
 import net.softglobe.groceryplanner.model.Grocery
 import net.softglobe.groceryplanner.model.GroceryDao
 import net.softglobe.groceryplanner.model.GroceryDatabase
 import net.softglobe.groceryplanner.model.Modification
 import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.model.Repository
+import net.softglobe.groceryplanner.model.network.RetrofitInstance
+import retrofit2.Response
 
 class MainViewModel(context: Context) : ViewModel() {
     private var groceryDao : GroceryDao
@@ -83,5 +86,9 @@ class MainViewModel(context: Context) : ViewModel() {
 
     suspend fun getGroceryItemsCount() : Int {
         return repository.getGroceryItemsCount()
+    }
+
+    suspend fun loginUser(email : String, password : String) : Response<LoginResponse> {
+        return RetrofitInstance.api.loginUser(email, password)
     }
 }

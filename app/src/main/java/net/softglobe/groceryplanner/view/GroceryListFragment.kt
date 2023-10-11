@@ -96,6 +96,10 @@ class GroceryListFragment : Fragment() {
                             }
                             .show()
                     }
+
+                    R.id.account -> {
+                        findNavController().navigate(R.id.action_groceryListFragment_to_loginFragment)
+                    }
                 }
                 return true
             }

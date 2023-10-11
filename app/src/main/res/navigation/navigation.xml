@@ -13,10 +13,17 @@
         <action
             android:id="@+id/action_groceryListFragment_to_addGroceryFragment"
             app:destination="@id/addGroceryFragment" />
+        <action
+            android:id="@+id/action_groceryListFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/addGroceryFragment"
         android:name="net.softglobe.groceryplanner.view.AddGroceryFragment"
         android:label="fragment_add_grocery"
         tools:layout="@layout/fragment_add_grocery" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="net.softglobe.groceryplanner.view.LoginFragment"
+        android:label="LoginFragment" />
 </navigation>
