@@ -6,14 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import net.softglobe.groceryplanner.LoginResponse
+import net.softglobe.groceryplanner.model.network.LoginResponse
 import net.softglobe.groceryplanner.model.Grocery
 import net.softglobe.groceryplanner.model.GroceryDao
 import net.softglobe.groceryplanner.model.GroceryDatabase
 import net.softglobe.groceryplanner.model.Modification
 import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.model.Repository
+import net.softglobe.groceryplanner.model.network.Result
 import net.softglobe.groceryplanner.model.network.RetrofitInstance
+import net.softglobe.groceryplanner.model.network.User
+import retrofit2.Call
 import retrofit2.Response
 
 class MainViewModel(context: Context) : ViewModel() {
@@ -90,5 +93,13 @@ class MainViewModel(context: Context) : ViewModel() {
 
     suspend fun loginUser(email : String, password : String) : Response<LoginResponse> {
         return RetrofitInstance.api.loginUser(email, password)
+    }
+
+    suspend fun registerUser(user: User) : Response<Result> {
+        return RetrofitInstance.api.registerUser(user)
+    }
+
+    suspend fun forgotPassword(email: String, code : String) : Response<Result> {
+        return RetrofitInstance.api.forgotPassword(email, code)
     }
 }

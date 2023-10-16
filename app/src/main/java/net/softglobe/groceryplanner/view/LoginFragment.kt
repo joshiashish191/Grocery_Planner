@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentLoginBinding
@@ -34,8 +35,8 @@ class LoginFragment : Fragment() {
     private fun initView() {
 
         binding.btnLogin.setOnClickListener {
-            var email = binding.etEmail.text.toString()
-            var password = binding.etPassword.text.toString()
+            val email = binding.etEmail.text.toString()
+            val password = binding.etPassword.text.toString()
 
             if (email.isNotBlank() && password.isNotBlank()) {
                 lifecycleScope.launch {
@@ -53,6 +54,14 @@ class LoginFragment : Fragment() {
             } else {
                 Toast.makeText(activity, "Please enter all the fields", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.register.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+        }
+
+        binding.forgotPass.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_forgotPasswordFragment)
         }
     }
 }

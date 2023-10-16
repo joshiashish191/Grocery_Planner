@@ -25,11 +25,20 @@ class Preferences(context : Context) {
         editor.apply()
     }
 
+    fun setAuthToken(token : String) {
+        editor.putString(Constants.AUTH_TOKEN, token)
+        editor.apply()
+    }
+
     fun getGroceryRecordsLimit() : Int {
         return preferences.getInt(Constants.GROCERY_RECORDS_LIMIT_FOR_FREE, 100)
     }
 
     fun getModificationsRecordsLimit() : Int {
         return preferences.getInt(Constants.MODIFICATION_RECORDS_LIMIT_FOR_FREE, 3)
+    }
+
+    fun getAuthToken() : String {
+        return preferences.getString(Constants.AUTH_TOKEN, "")!!
     }
 }

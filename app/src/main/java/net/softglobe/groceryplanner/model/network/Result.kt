@@ -1,4 +1,4 @@
-package net.softglobe.groceryplanner.model
+package net.softglobe.groceryplanner.model.network
 
 data class Result(
     val error: Boolean,
