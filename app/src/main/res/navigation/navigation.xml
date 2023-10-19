@@ -39,6 +39,20 @@
         android:label="RegisterFragment" />
     <fragment
         android:id="@+id/forgotPasswordFragment"
-        android:name="net.softglobe.groceryplanner.ForgotPasswordFragment"
-        android:label="ForgotPasswordFragment" />
+        android:name="net.softglobe.groceryplanner.view.ForgotPasswordFragment"
+        android:label="ForgotPasswordFragment" >
+        <action
+            android:id="@+id/action_forgotPasswordFragment_to_changePasswordFragment"
+            app:destination="@id/changePasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="net.softglobe.groceryplanner.view.ChangePasswordFragment"
+        android:label="ChangePasswordFragment" >
+        <action
+            android:id="@+id/action_changePasswordFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

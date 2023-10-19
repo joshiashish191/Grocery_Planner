@@ -5,4 +5,5 @@ object URLs {
     const val LOGIN = "login.php"
     const val REGISTER = "register.php"
     const val FORGOT_PASS = "forgot-pass/sendmail.php"
+    const val RESET_PASS = "forgot-pass/reset-pass.php"
 }

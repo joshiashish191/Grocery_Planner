@@ -30,6 +30,11 @@ class Preferences(context : Context) {
         editor.apply()
     }
 
+    fun setUserEmail(email : String) {
+        editor.putString(Constants.EMAIL, email)
+        editor.apply()
+    }
+
     fun getGroceryRecordsLimit() : Int {
         return preferences.getInt(Constants.GROCERY_RECORDS_LIMIT_FOR_FREE, 100)
     }
@@ -40,5 +45,9 @@ class Preferences(context : Context) {
 
     fun getAuthToken() : String {
         return preferences.getString(Constants.AUTH_TOKEN, "")!!
+    }
+
+    fun getUserEmail() : String {
+        return preferences.getString(Constants.EMAIL, "")!!
     }
 }

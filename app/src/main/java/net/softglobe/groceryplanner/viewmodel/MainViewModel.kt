@@ -102,4 +102,8 @@ class MainViewModel(context: Context) : ViewModel() {
     suspend fun forgotPassword(email: String, code : String) : Response<Result> {
         return RetrofitInstance.api.forgotPassword(email, code)
     }
+
+    suspend fun resetPassword(email: String, newPassword : String) : Response<Result> {
+        return RetrofitInstance.api.resetPassword(email, newPassword)
+    }
 }
