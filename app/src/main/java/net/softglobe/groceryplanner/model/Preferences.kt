@@ -50,4 +50,9 @@ class Preferences(context : Context) {
     fun getUserEmail() : String {
         return preferences.getString(Constants.EMAIL, "")!!
     }
+
+    fun clearAllPreferences() {
+        editor.clear()
+        editor.apply()
+    }
 }

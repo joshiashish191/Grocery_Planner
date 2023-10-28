@@ -13,8 +13,8 @@ import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentChangePasswordBinding
-import net.softglobe.groceryplanner.model.Constants.KEY_IS_FROM_FORGOT_PASS_SCREEN
 import net.softglobe.groceryplanner.model.Constants.KEY_EMAIL
+import net.softglobe.groceryplanner.model.Constants.KEY_IS_FROM_FORGOT_PASS_SCREEN
 import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
@@ -23,6 +23,7 @@ class ChangePasswordFragment : Fragment() {
 
     lateinit var binding : FragmentChangePasswordBinding
     private val viewModel by viewModels<MainViewModel>{ MainViewModelFactory(activity?.baseContext!!) }
+    private lateinit var preferences : Preferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +37,7 @@ class ChangePasswordFragment : Fragment() {
     }
 
     private fun initView() {
+        preferences = Preferences(activity?.applicationContext!!)
         var isFromForgotPassScreen = false
         var email = ""
         if (arguments != null) {
@@ -44,36 +46,94 @@ class ChangePasswordFragment : Fragment() {
                 email = arguments?.getString(KEY_EMAIL)!!
             }
         }
-        if (isFromForgotPassScreen) {
-            binding.submitBtn.setOnClickListener {
+
+        if (!isFromForgotPassScreen) {
+            //Normal change password scenario
+            binding.etCurrentPassword.visibility = View.VISIBLE
+        }
+
+        binding.submitBtn.setOnClickListener {
+            if (isFromForgotPassScreen) {
                 //forgot pass scenario
                 val newPassword = binding.etNewPassword.text.toString()
                 val confirmNewPassword = binding.etReEnterNewPassword.text.toString()
                 if (newPassword == confirmNewPassword) {
-                    val preferences = Preferences(activity?.applicationContext!!)
                     lifecycleScope.launch {
                         try {
                             val response =
                                 viewModel.resetPassword(email, newPassword)
                             if (response.isSuccessful && response.body() != null) {
                                 if (!response.body()!!.error) {
-                                    Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        activity,
+                                        response.body()!!.message,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                     findNavController().navigate(R.id.action_changePasswordFragment_to_loginFragment)
                                 } else {
-                                    Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        activity,
+                                        response.body()!!.message,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
-                        } catch (e : Exception) {
-                            Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
+                        } catch (e: Exception) {
+                            Toast.makeText(
+                                activity,
+                                "Something went wrong. Please try again",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 } else {
-                    Toast.makeText(activity, "Passwords doesn't match. Please verify again.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        activity,
+                        "Passwords doesn't match. Please verify again.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                val oldPassword = binding.etCurrentPassword.text.toString()
+                val newPassword = binding.etNewPassword.text.toString()
+                val confirmNewPassword = binding.etReEnterNewPassword.text.toString()
+                if (newPassword == confirmNewPassword) {
+                    lifecycleScope.launch {
+                        try {
+                            val response =
+                                viewModel.changePassword(preferences.getUserEmail(), oldPassword, newPassword)
+                            if (response.isSuccessful && response.body() != null) {
+                                if (!response.body()!!.error) {
+                                    Toast.makeText(
+                                        activity,
+                                        response.body()!!.message,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    findNavController().navigate(R.id.action_changePasswordFragment_to_accountFragment)
+                                } else {
+                                    Toast.makeText(
+                                        activity,
+                                        response.body()!!.message,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Toast.makeText(
+                                activity,
+                                "Something went wrong. Please try again",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                } else {
+                    Toast.makeText(
+                        activity,
+                        "Passwords doesn't match. Please verify again.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
-        } else {
-            //Normal change password scenario
-            binding.etCurrentPassword.visibility = View.VISIBLE
         }
     }
 }

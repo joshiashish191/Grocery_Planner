@@ -24,4 +24,8 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST(URLs.RESET_PASS)
     suspend fun resetPassword(@Field("email") email : String, @Field("newpass") newPassword : String) : Response<Result>
+
+    @FormUrlEncoded
+    @POST(URLs.CHANGE_PASS)
+    suspend fun changePassword(@Field("email") email : String, @Field("oldpass") oldPassword : String, @Field("newpass") newPassword : String) : Response<Result>
 }

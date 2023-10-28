@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentGroceryListBinding
 import net.softglobe.groceryplanner.model.Grocery
+import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.model.adapters.GroceryListAdapter
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
@@ -29,6 +30,7 @@ class GroceryListFragment : Fragment() {
     private lateinit var binding : FragmentGroceryListBinding
 
     private val viewModel by viewModels<MainViewModel>{ MainViewModelFactory(activity?.baseContext!!) }
+    private lateinit var preferences : Preferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_grocery_list, container, false)
@@ -38,6 +40,7 @@ class GroceryListFragment : Fragment() {
     }
 
     private fun initView() {
+        preferences = Preferences(activity?.applicationContext!!)
         viewModel.getGroceryList().observe(viewLifecycleOwner) {
             setRecyclerViewForGroceryList(it)
         }
@@ -98,7 +101,10 @@ class GroceryListFragment : Fragment() {
                     }
 
                     R.id.account -> {
-                        findNavController().navigate(R.id.action_groceryListFragment_to_loginFragment)
+                        if (preferences.isUserLoggedIn())
+                            findNavController().navigate(R.id.action_groceryListFragment_to_accountFragment)
+                        else
+                            findNavController().navigate(R.id.action_groceryListFragment_to_loginFragment)
                     }
                 }
                 return true

@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_groceryListFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_groceryListFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
     </fragment>
     <fragment
         android:id="@+id/addGroceryFragment"
@@ -32,6 +35,12 @@
         <action
             android:id="@+id/action_loginFragment_to_forgotPasswordFragment"
             app:destination="@id/forgotPasswordFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_accountFragment"
+            app:destination="@id/accountFragment"
+            app:launchSingleTop="false"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -54,5 +63,22 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_changePasswordFragment_to_accountFragment"
+            app:destination="@id/accountFragment"
+            app:popUpTo="@id/groceryListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="net.softglobe.groceryplanner.view.AccountFragment"
+        android:label="AccountFragment" >
+        <action
+            android:id="@+id/action_accountFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/accountFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_accountFragment_to_changePasswordFragment"
+            app:destination="@id/changePasswordFragment" />
     </fragment>
 </navigation>
