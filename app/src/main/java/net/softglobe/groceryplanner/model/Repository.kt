@@ -8,6 +8,10 @@ class Repository(private val groceryDao: GroceryDao) {
         return groceryDao.getGroceryList()
     }
 
+    suspend fun getGroceryListWithoutObserver() : List<Grocery> {
+        return groceryDao.getGroceryListWithoutObserver()
+    }
+
     fun getModificationsList(id: Int): LiveData<List<Modification>> {
         return groceryDao.getModificationsList(id)
     }
@@ -56,5 +60,21 @@ class Repository(private val groceryDao: GroceryDao) {
 
     suspend fun getModificationsCountByGroceryItemId(groceryItemId : Int) : Int {
         return groceryDao.getModificationsCountByGroceryItemId(groceryItemId)
+    }
+
+    fun getAllModificationsList() : LiveData<List<Modification>> {
+        return groceryDao.getAllModificationsList()
+    }
+
+    suspend fun clearAllModifications() {
+        groceryDao.clearAllModifications()
+    }
+
+    suspend fun clearAllGroceryData() {
+        groceryDao.clearAllGroceryData()
+    }
+
+    suspend fun getAllModificationsListWithoutObserver() : List<Modification> {
+        return groceryDao.getAllModificationsListWithoutObserver()
     }
 }

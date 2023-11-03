@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.AccountFragment"
+        tools:context=".view.ProfileFragment"
         android:layout_margin="8dp">
 
         <TextView
@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="Account"
+            android:text="Profile"
             style="@style/grocery_item_title"
             android:gravity="center_horizontal" />
 

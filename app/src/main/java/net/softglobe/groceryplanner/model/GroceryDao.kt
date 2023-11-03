@@ -9,6 +9,9 @@ interface GroceryDao {
     @Query("SELECT * FROM Grocery")
     fun getGroceryList() : LiveData<List<Grocery>>
 
+    @Query("SELECT * FROM Grocery")
+    suspend fun getGroceryListWithoutObserver() : List<Grocery>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGroceryItem(grocery: Grocery) : Long
 
@@ -50,5 +53,17 @@ interface GroceryDao {
 
     @Query("SELECT COUNT(*) FROM Modification WHERE itemId=:groceryItemId")
     suspend fun getModificationsCountByGroceryItemId(groceryItemId : Int) : Int
+
+    @Query("SELECT * FROM Modification")
+    fun getAllModificationsList() : LiveData<List<Modification>>
+
+    @Query("DELETE FROM Modification")
+    suspend fun clearAllModifications()
+
+    @Query("DELETE FROM Grocery")
+    suspend fun clearAllGroceryData()
+
+    @Query("SELECT * FROM Modification")
+    suspend fun getAllModificationsListWithoutObserver() : List<Modification>
 
 }

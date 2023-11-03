@@ -40,7 +40,7 @@ class Preferences(context : Context) {
     }
 
     fun getModificationsRecordsLimit() : Int {
-        return preferences.getInt(Constants.MODIFICATION_RECORDS_LIMIT_FOR_FREE, 3)
+        return preferences.getInt(Constants.MODIFICATION_RECORDS_LIMIT_FOR_FREE, 10)
     }
 
     fun getAuthToken() : String {

@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentRegisterBinding
@@ -49,6 +50,7 @@ class RegisterFragment : Fragment() {
                             if (response.isSuccessful && response.body() != null) {
                                 if (!response.body()!!.error) {
                                     Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
+                                    findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
                                 } else {
                                     Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
                                 }

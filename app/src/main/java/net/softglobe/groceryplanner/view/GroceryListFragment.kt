@@ -8,6 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -15,10 +16,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentGroceryListBinding
+import net.softglobe.groceryplanner.model.BackUpRequest
 import net.softglobe.groceryplanner.model.Grocery
 import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.model.adapters.GroceryListAdapter
@@ -105,6 +109,72 @@ class GroceryListFragment : Fragment() {
                             findNavController().navigate(R.id.action_groceryListFragment_to_accountFragment)
                         else
                             findNavController().navigate(R.id.action_groceryListFragment_to_loginFragment)
+                    }
+
+                    R.id.export_backup -> {
+                        lifecycleScope.launch {
+                            val groceryList = viewModel.getGroceryListWithoutObserver()
+                            val modificationsList =  viewModel.getAllModificationsListWithoutObserver()
+                            val backUpOperationsRequest = BackUpRequest(
+                                groceryList, modificationsList, preferences.getUserEmail()
+                            )
+                            try {
+                                val response = viewModel.backupToServer(backUpOperationsRequest)
+
+                                if (response.isSuccessful && response.body() != null) {
+                                    if (!response.body()!!.error) {
+                                        Toast.makeText(
+                                            activity, response.body()!!.message, Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        Toast.makeText(
+                                            activity, response.body()!!.message, Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                } else {
+                                    Toast.makeText(
+                                        activity,
+                                        "Something went wrong. Please try again",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            } catch (e: Exception) {
+                                Toast.makeText(
+                                    activity,
+                                    "Something went wrong. Please try again",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+
+                    R.id.import_backup -> {
+                        lifecycleScope.launch {
+                            try {
+                                val response = viewModel.importBackupFromServer(preferences.getUserEmail())
+                                if (response.isSuccessful && response.body() != null) {
+                                    if (!response.body()!!.error) {
+                                        viewModel.clearAllGroceryData()
+                                        viewModel.clearAllModifications()
+                                        val groceryList = response.body()!!.groceryList
+                                        val modificationsList = response.body()!!.modificationsList
+                                        groceryList.forEach {grocery ->
+                                            viewModel.insertGroceryItemOnly(grocery)
+                                        }
+                                        modificationsList.forEach {modification ->
+                                            viewModel.insertModification(modification)
+                                        }
+                                        Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
+                                    }
+                                } else {
+                                    Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
+                                }
+                            } catch (e : Exception) {
+                                Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 }
                 return true

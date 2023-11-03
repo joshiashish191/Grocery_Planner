@@ -6,17 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import net.softglobe.groceryplanner.R
-import net.softglobe.groceryplanner.databinding.FragmentAccountBinding
+import net.softglobe.groceryplanner.databinding.FragmentProfileBinding
 import net.softglobe.groceryplanner.model.Preferences
-import net.softglobe.groceryplanner.viewmodel.MainViewModel
-import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
 
-class AccountFragment : Fragment() {
+class ProfileFragment : Fragment() {
 
-    lateinit var binding : FragmentAccountBinding
+    lateinit var binding : FragmentProfileBinding
     private lateinit var preferences : Preferences
 
     override fun onCreateView(
@@ -25,7 +22,7 @@ class AccountFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(layoutInflater,
-            R.layout.fragment_account, container, false)
+            R.layout.fragment_profile, container, false)
         initView()
         return binding.root
     }

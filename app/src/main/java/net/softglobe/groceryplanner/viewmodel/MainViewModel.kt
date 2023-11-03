@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.softglobe.groceryplanner.model.BackUpRequest
 import net.softglobe.groceryplanner.model.network.LoginResponse
 import net.softglobe.groceryplanner.model.Grocery
 import net.softglobe.groceryplanner.model.GroceryDao
@@ -16,7 +17,6 @@ import net.softglobe.groceryplanner.model.Repository
 import net.softglobe.groceryplanner.model.network.Result
 import net.softglobe.groceryplanner.model.network.RetrofitInstance
 import net.softglobe.groceryplanner.model.network.User
-import retrofit2.Call
 import retrofit2.Response
 
 class MainViewModel(context: Context) : ViewModel() {
@@ -34,6 +34,10 @@ class MainViewModel(context: Context) : ViewModel() {
         return repository.getGroceryList()
     }
 
+    suspend fun getGroceryListWithoutObserver() : List<Grocery> {
+        return repository.getGroceryListWithoutObserver()
+    }
+
     fun getModificationsList(id : Int) : LiveData<List<Modification>> {
         return repository.getModificationsList(id)
     }
@@ -48,6 +52,14 @@ class MainViewModel(context: Context) : ViewModel() {
                 repository.insertModification(modification)
         }
         return id
+    }
+
+    suspend fun insertGroceryItemOnly(grocery: Grocery) : Long {
+        return repository.insertGroceryItem(grocery)
+    }
+
+    suspend fun insertModification(modification: Modification) {
+        repository.insertModification(modification)
     }
 
     fun deleteGroceryItem(id : Int) {
@@ -109,5 +121,29 @@ class MainViewModel(context: Context) : ViewModel() {
 
     suspend fun changePassword(email: String, oldPassword : String, newPassword : String) : Response<Result> {
         return RetrofitInstance.api.changePassword(email, oldPassword, newPassword)
+    }
+
+    suspend fun backupToServer(backUpRequest: BackUpRequest) : Response<Result> {
+        return RetrofitInstance.api.backupToServer(backUpRequest)
+    }
+
+    fun getAllModificationsList() : LiveData<List<Modification>> {
+        return repository.getAllModificationsList()
+    }
+
+    suspend fun getAllModificationsListWithoutObserver() : List<Modification> {
+        return repository.getAllModificationsListWithoutObserver()
+    }
+
+    suspend fun importBackupFromServer(email: String) : Response<BackUpRequest> {
+        return RetrofitInstance.api.importBackupFromServer(email)
+    }
+
+    suspend fun clearAllModifications() {
+        repository.clearAllModifications()
+    }
+
+    suspend fun clearAllGroceryData() {
+        repository.clearAllGroceryData()
     }
 }

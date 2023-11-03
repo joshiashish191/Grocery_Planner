@@ -1,5 +1,6 @@
 package net.softglobe.groceryplanner.model.network
 
+import net.softglobe.groceryplanner.model.BackUpRequest
 import net.softglobe.groceryplanner.model.URLs
 import retrofit2.Response
 import retrofit2.http.Body
@@ -28,4 +29,11 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST(URLs.CHANGE_PASS)
     suspend fun changePassword(@Field("email") email : String, @Field("oldpass") oldPassword : String, @Field("newpass") newPassword : String) : Response<Result>
+
+    @POST(URLs.BACKUP_TO_SERVER)
+    suspend fun backupToServer(@Body backUpRequest: BackUpRequest) : Response<Result>
+
+    @FormUrlEncoded
+    @POST(URLs.BACKUP_FROM_SERVER)
+    suspend fun importBackupFromServer(@Field("email") email : String) : Response<BackUpRequest>
 }
