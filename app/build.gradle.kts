@@ -8,6 +8,12 @@ android {
     namespace = "net.softglobe.groceryplanner"
     compileSdk = 34
 
+    android {
+        buildFeatures {
+            buildConfig = true
+        }
+    }
+
     defaultConfig {
         applicationId = "net.softglobe.groceryplanner"
         minSdk = 24
@@ -21,10 +27,18 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "BASE_URL", "\"https://groceryplanner.softglobe.net/api/\"")
+            signingConfig = signingConfigs.getByName("debug")
+        }
+
+        debug {
+            isDebuggable = true
+            buildConfigField("String", "BASE_URL", "\"http://192.168.0.104/groceryplanner/api/\"")
         }
     }
     compileOptions {

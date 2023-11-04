@@ -1,7 +1,9 @@
 package net.softglobe.groceryplanner.model
 
+import net.softglobe.groceryplanner.BuildConfig
+
 object URLs {
-    const val BASE_URL = "http://192.168.0.104/groceryplanner/api/"
+    val BASE_URL = BuildConfig.BASE_URL
     const val LOGIN = "login.php"
     const val REGISTER = "register.php"
     const val FORGOT_PASS = "forgot-pass/sendmail.php"
