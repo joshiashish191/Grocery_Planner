@@ -35,12 +35,34 @@ class Preferences(context : Context) {
         editor.apply()
     }
 
-    fun getGroceryRecordsLimit() : Int {
-        return preferences.getInt(Constants.GROCERY_RECORDS_LIMIT_FOR_FREE, 100)
+    fun setGroceryRecordsLimitForFree(limit : String) {
+        editor.putString(Constants.GROCERY_RECORDS_LIMIT_FOR_FREE, limit)
+        editor.apply()
     }
 
-    fun getModificationsRecordsLimit() : Int {
-        return preferences.getInt(Constants.MODIFICATION_RECORDS_LIMIT_FOR_FREE, 10)
+    fun setModificationRecordsLimitForFree(limit : String) {
+        editor.putString(Constants.MODIFICATION_RECORDS_LIMIT_FOR_FREE, limit)
+        editor.apply()
+    }
+
+    fun setMonthlyOriginalPriceForPaidVersion(price : String) {
+        editor.putString(Constants.MONTHLY_ORIGINAL_PRICE_FOR_PAID_VERSION, price)
+        editor.apply()
+    }
+
+    fun setAnnualOriginalPriceForPaidVersion(price : String) {
+        editor.putString(Constants.ANNUAL_ORIGINAL_PRICE_FOR_PAID_VERSION, price)
+        editor.apply()
+    }
+
+    fun setMonthlyDiscountedPriceForPaidVersion(price : String) {
+        editor.putString(Constants.MONTHLY_DISCOUNTED_PRICE_FOR_PAID_VERSION, price)
+        editor.apply()
+    }
+
+    fun setAnnualDiscountedPriceForPaidVersion(price : String) {
+        editor.putString(Constants.ANNUAL_DISCOUNTED_PRICE_FOR_PAID_VERSION, price)
+        editor.apply()
     }
 
     fun getAuthToken() : String {
@@ -49,6 +71,30 @@ class Preferences(context : Context) {
 
     fun getUserEmail() : String {
         return preferences.getString(Constants.EMAIL, "")!!
+    }
+
+    fun getGroceryRecordsLimitForFree() : String {
+        return preferences.getString(Constants.GROCERY_RECORDS_LIMIT_FOR_FREE, "100")!!
+    }
+
+    fun getModificationRecordsLimitForFree() : String {
+        return preferences.getString(Constants.MODIFICATION_RECORDS_LIMIT_FOR_FREE, "10")!!
+    }
+
+    fun getMonthlyOriginalPriceForPaidVersion() : String {
+        return preferences.getString(Constants.MONTHLY_ORIGINAL_PRICE_FOR_PAID_VERSION, "")!!
+    }
+
+    fun getAnnualOriginalPriceForPaidVersion() : String {
+        return preferences.getString(Constants.ANNUAL_ORIGINAL_PRICE_FOR_PAID_VERSION, "")!!
+    }
+
+    fun getMonthlyDiscountedPriceForPaidVersion() : String {
+        return preferences.getString(Constants.MONTHLY_DISCOUNTED_PRICE_FOR_PAID_VERSION, "")!!
+    }
+
+    fun getAnnualDiscountedPriceForPaidVersion() : String {
+        return preferences.getString(Constants.ANNUAL_DISCOUNTED_PRICE_FOR_PAID_VERSION, "")!!
     }
 
     fun clearAllPreferences() {

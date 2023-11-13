@@ -48,6 +48,11 @@ class LoginFragment : Fragment() {
                             Toast.makeText(activity, response.body()!!.result.message, Toast.LENGTH_SHORT).show()
                             preferences.setUserEmail(email)
                             preferences.setUserLoginStatus(true)
+                            preferences.setAuthToken(response.body()!!.user.authToken)
+                            if (response.body()!!.user.isPaidUser == 0)
+                                preferences.setUserPaidStatus(false)
+                            else
+                                preferences.setUserPaidStatus(true)
                             findNavController().navigate(R.id.action_loginFragment_to_accountFragment)
                         } else {
                             Toast.makeText(activity, response.body()!!.result.message, Toast.LENGTH_SHORT).show()

@@ -1,11 +1,15 @@
 package net.softglobe.groceryplanner.model.network
 
-import net.softglobe.groceryplanner.model.BackUpRequest
+import net.softglobe.groceryplanner.model.network.request.BackUpRequest
+import net.softglobe.groceryplanner.model.network.response.MetaDataResponse
 import net.softglobe.groceryplanner.model.URLs
+import net.softglobe.groceryplanner.model.network.response.LoginResponse
+import net.softglobe.groceryplanner.model.network.response.UserMetaDataResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ApiInterface {
@@ -36,4 +40,11 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST(URLs.BACKUP_FROM_SERVER)
     suspend fun importBackupFromServer(@Field("email") email : String) : Response<BackUpRequest>
+
+    @GET(URLs.METADATA)
+    suspend fun getMetadata() : Response<MetaDataResponse>
+
+    @FormUrlEncoded
+    @POST(URLs.USER_METADATA)
+    suspend fun getUserMetadata(@Field("email") email: String, @Field("authToken") authToken: String) : Response<UserMetaDataResponse>
 }

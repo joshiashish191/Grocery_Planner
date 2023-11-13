@@ -6,17 +6,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import net.softglobe.groceryplanner.model.BackUpRequest
-import net.softglobe.groceryplanner.model.network.LoginResponse
+import net.softglobe.groceryplanner.model.network.request.BackUpRequest
+import net.softglobe.groceryplanner.model.network.response.LoginResponse
 import net.softglobe.groceryplanner.model.Grocery
 import net.softglobe.groceryplanner.model.GroceryDao
 import net.softglobe.groceryplanner.model.GroceryDatabase
+import net.softglobe.groceryplanner.model.network.response.MetaDataResponse
 import net.softglobe.groceryplanner.model.Modification
 import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.model.Repository
 import net.softglobe.groceryplanner.model.network.Result
 import net.softglobe.groceryplanner.model.network.RetrofitInstance
 import net.softglobe.groceryplanner.model.network.User
+import net.softglobe.groceryplanner.model.network.response.UserMetaDataResponse
 import retrofit2.Response
 
 class MainViewModel(context: Context) : ViewModel() {
@@ -48,7 +50,7 @@ class MainViewModel(context: Context) : ViewModel() {
             id = repository.insertGroceryItem(grocery)
             modification.itemId = id.toInt()
             val modificationCount = repository.getModificationsCountByGroceryItemId(id.toInt())
-            if (!preferences.isPaidUser() && modificationCount < preferences.getModificationsRecordsLimit())
+            if (!preferences.isPaidUser() && modificationCount < Integer.parseInt(preferences.getModificationRecordsLimitForFree()))
                 repository.insertModification(modification)
         }
         return id
@@ -145,5 +147,13 @@ class MainViewModel(context: Context) : ViewModel() {
 
     suspend fun clearAllGroceryData() {
         repository.clearAllGroceryData()
+    }
+
+    suspend fun getMetadata() : Response<MetaDataResponse> {
+        return RetrofitInstance.api.getMetadata()
+    }
+
+    suspend fun getUserMetadata(email: String) : Response<UserMetaDataResponse> {
+        return RetrofitInstance.api.getUserMetadata(email, preferences.getAuthToken())
     }
 }

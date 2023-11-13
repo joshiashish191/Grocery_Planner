@@ -209,7 +209,7 @@ class AddGroceryFragment : Fragment() {
             var toastMsg = "Item Added"
             if (id == null) {
                 if (!preferences.isPaidUser()
-                    && totalGroceryItemsCount!! >= preferences.getGroceryRecordsLimit()) {
+                    && totalGroceryItemsCount!! >= Integer.parseInt(preferences.getGroceryRecordsLimitForFree())) {
                     Toast.makeText(activity, "Limit reached! Need to purchase a paid plan.", Toast.LENGTH_SHORT).show()
                     return
                 }

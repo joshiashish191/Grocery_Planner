@@ -1,4 +1,7 @@
-package net.softglobe.groceryplanner.model
+package net.softglobe.groceryplanner.model.network.request
+
+import net.softglobe.groceryplanner.model.Grocery
+import net.softglobe.groceryplanner.model.Modification
 
 data class BackUpRequest(
     val groceryList: List<Grocery>,

@@ -4,5 +4,6 @@ data class  User(
     val email: String,
     val name: String,
     val password : String,
-    val auth_token: String = ""
+    val authToken: String = "",
+    val isPaidUser : Int = 0
 )

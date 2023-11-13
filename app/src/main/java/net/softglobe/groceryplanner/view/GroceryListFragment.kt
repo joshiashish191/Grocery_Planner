@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentGroceryListBinding
-import net.softglobe.groceryplanner.model.BackUpRequest
+import net.softglobe.groceryplanner.model.network.request.BackUpRequest
 import net.softglobe.groceryplanner.model.Grocery
 import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.model.adapters.GroceryListAdapter

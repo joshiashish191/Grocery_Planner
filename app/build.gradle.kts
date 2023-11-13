@@ -38,7 +38,7 @@ android {
 
         debug {
             isDebuggable = true
-            buildConfigField("String", "BASE_URL", "\"http://192.168.0.104/groceryplanner/api/\"")
+            buildConfigField("String", "BASE_URL", "\"http://192.168.0.123/groceryplanner/api/\"")
         }
     }
     compileOptions {
@@ -77,4 +77,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    //Splash Screen
+    implementation("androidx.core:core-splashscreen:1.1.0-alpha02")
 }
