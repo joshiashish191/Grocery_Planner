@@ -121,8 +121,8 @@ class MainViewModel(context: Context) : ViewModel() {
         return RetrofitInstance.api.resetPassword(email, newPassword)
     }
 
-    suspend fun changePassword(email: String, oldPassword : String, newPassword : String) : Response<Result> {
-        return RetrofitInstance.api.changePassword(email, oldPassword, newPassword)
+    suspend fun changePassword(email: String, oldPassword : String, newPassword : String, authToken : String) : Response<Result> {
+        return RetrofitInstance.api.changePassword(email, oldPassword, newPassword, authToken)
     }
 
     suspend fun backupToServer(backUpRequest: BackUpRequest) : Response<Result> {
@@ -138,7 +138,7 @@ class MainViewModel(context: Context) : ViewModel() {
     }
 
     suspend fun importBackupFromServer(email: String) : Response<BackUpRequest> {
-        return RetrofitInstance.api.importBackupFromServer(email)
+        return RetrofitInstance.api.importBackupFromServer(email, preferences.getAuthToken())
     }
 
     suspend fun clearAllModifications() {
@@ -155,5 +155,13 @@ class MainViewModel(context: Context) : ViewModel() {
 
     suspend fun getUserMetadata(email: String) : Response<UserMetaDataResponse> {
         return RetrofitInstance.api.getUserMetadata(email, preferences.getAuthToken())
+    }
+
+    suspend fun getUserDetails(email: String) : Response<LoginResponse> {
+        return RetrofitInstance.api.getUserDetails(email, preferences.getAuthToken())
+    }
+
+    suspend fun changeUserName(email: String, name: String) : Response<Result> {
+        return RetrofitInstance.api.changeUserName(email, preferences.getAuthToken(), "name", name)
     }
 }

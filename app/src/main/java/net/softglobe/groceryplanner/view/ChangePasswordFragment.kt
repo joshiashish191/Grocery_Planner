@@ -1,6 +1,7 @@
 package net.softglobe.groceryplanner.view
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,6 +58,10 @@ class ChangePasswordFragment : Fragment() {
                 //forgot pass scenario
                 val newPassword = binding.etNewPassword.text.toString()
                 val confirmNewPassword = binding.etReEnterNewPassword.text.toString()
+                if (TextUtils.isEmpty(newPassword) || TextUtils.isEmpty(confirmNewPassword)) {
+                    Toast.makeText(activity, "Please fill all the fields", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 if (newPassword == confirmNewPassword) {
                     lifecycleScope.launch {
                         try {
@@ -97,11 +102,16 @@ class ChangePasswordFragment : Fragment() {
                 val oldPassword = binding.etCurrentPassword.text.toString()
                 val newPassword = binding.etNewPassword.text.toString()
                 val confirmNewPassword = binding.etReEnterNewPassword.text.toString()
+
+                if (TextUtils.isEmpty(oldPassword) || TextUtils.isEmpty(newPassword) || TextUtils.isEmpty(confirmNewPassword)) {
+                    Toast.makeText(activity, "Please fill all the fields", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 if (newPassword == confirmNewPassword) {
                     lifecycleScope.launch {
                         try {
                             val response =
-                                viewModel.changePassword(preferences.getUserEmail(), oldPassword, newPassword)
+                                viewModel.changePassword(preferences.getUserEmail(), oldPassword, newPassword, preferences.getAuthToken())
                             if (response.isSuccessful && response.body() != null) {
                                 if (!response.body()!!.error) {
                                     Toast.makeText(

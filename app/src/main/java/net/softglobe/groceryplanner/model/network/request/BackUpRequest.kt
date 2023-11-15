@@ -8,5 +8,6 @@ data class BackUpRequest(
     val modificationsList: List<Modification>,
     val email : String,
     val error: Boolean = false,
-    val message: String = ""
+    val message: String = "",
+    val authToken : String
 )

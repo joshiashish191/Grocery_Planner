@@ -13,4 +13,6 @@ object URLs {
     const val BACKUP_FROM_SERVER = "import-backup.php"
     const val METADATA = "metadata.php"
     const val USER_METADATA = "user-metadata.php"
+    const val USER_DETAILS = "user-details.php"
+    const val USER_OPERATIONS = "user-operations.php"
 }
