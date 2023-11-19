@@ -41,6 +41,20 @@ class AccountFragment : Fragment() {
     private fun initView() {
         preferences = Preferences(activity?.applicationContext!!)
 
+        if (preferences.isPaidUser()) {
+            binding.txtPlanName.apply {
+                setCompoundDrawablesWithIntrinsicBounds(R.drawable.premium_member_icon,0,0,0)
+                text = "  Premium Member"
+            }
+            binding.txtUpgradePlan.text = resources.getText(R.string.already_premium_plan_description)
+        } else {
+            binding.txtPlanName.apply {
+                setCompoundDrawablesWithIntrinsicBounds(R.drawable.star_icon,0,0,0)
+                text = "  Sparkle Plan"
+            }
+            binding.txtUpgradePlan.text = resources.getText(R.string.upgrade_plan_description)
+        }
+
         lifecycleScope.launch {
             try {
                 val response = viewModel.getUserDetails(preferences.getUserEmail())
