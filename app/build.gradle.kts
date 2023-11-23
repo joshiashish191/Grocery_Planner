@@ -54,6 +54,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation("androidx.core:core-ktx:1.9.0")
@@ -79,4 +80,6 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     //Splash Screen
     implementation("androidx.core:core-splashscreen:1.1.0-alpha02")
+    //Stripe
+    implementation("com.stripe:stripe-android:20.34.4")
 }

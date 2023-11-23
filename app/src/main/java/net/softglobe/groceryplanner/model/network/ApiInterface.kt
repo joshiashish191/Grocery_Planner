@@ -4,6 +4,7 @@ import net.softglobe.groceryplanner.model.network.request.BackUpRequest
 import net.softglobe.groceryplanner.model.network.response.MetaDataResponse
 import net.softglobe.groceryplanner.model.URLs
 import net.softglobe.groceryplanner.model.network.response.LoginResponse
+import net.softglobe.groceryplanner.model.network.response.PaymentFetchResponse
 import net.softglobe.groceryplanner.model.network.response.UserMetaDataResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -55,4 +56,7 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST(URLs.USER_OPERATIONS)
     suspend fun changeUserName(@Field("email") email: String, @Field("authToken") authToken: String, @Field("operation") operation: String, @Field("name") name: String) : Response<Result>
+
+    @POST(URLs.PAYMENT_FETCH)
+    suspend fun callPaymentFetchApi() : Response<PaymentFetchResponse>
 }

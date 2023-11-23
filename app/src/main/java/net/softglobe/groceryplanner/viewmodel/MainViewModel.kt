@@ -18,6 +18,7 @@ import net.softglobe.groceryplanner.model.Repository
 import net.softglobe.groceryplanner.model.network.Result
 import net.softglobe.groceryplanner.model.network.RetrofitInstance
 import net.softglobe.groceryplanner.model.network.User
+import net.softglobe.groceryplanner.model.network.response.PaymentFetchResponse
 import net.softglobe.groceryplanner.model.network.response.UserMetaDataResponse
 import retrofit2.Response
 
@@ -163,5 +164,9 @@ class MainViewModel(context: Context) : ViewModel() {
 
     suspend fun changeUserName(email: String, name: String) : Response<Result> {
         return RetrofitInstance.api.changeUserName(email, preferences.getAuthToken(), "name", name)
+    }
+
+    suspend fun callPaymentFetchApi() : Response<PaymentFetchResponse> {
+        return RetrofitInstance.api.callPaymentFetchApi()
     }
 }

@@ -13,6 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.stripe.android.PaymentConfiguration
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentAccountBinding
@@ -21,11 +24,16 @@ import net.softglobe.groceryplanner.model.network.request.BackUpRequest
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
 
+
 class AccountFragment : Fragment() {
 
     lateinit var binding : FragmentAccountBinding
     private lateinit var preferences : Preferences
     private val viewModel by viewModels<MainViewModel>{ MainViewModelFactory(activity?.baseContext!!) }
+
+    private lateinit var paymentSheet: PaymentSheet
+    lateinit var customerConfig: PaymentSheet.CustomerConfiguration
+    lateinit var paymentIntentClientSecret: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +48,11 @@ class AccountFragment : Fragment() {
 
     private fun initView() {
         preferences = Preferences(activity?.applicationContext!!)
+        paymentSheet = PaymentSheet(this, ::onPaymentSheetResult)
+        fetchApi()
+        binding.payBtn.setOnClickListener {
+            presentPaymentSheet()
+        }
 
         if (preferences.isPaidUser()) {
             binding.txtPlanName.apply {
@@ -187,6 +200,72 @@ class AccountFragment : Fragment() {
                 .setView(view)
                 .show()
             
+        }
+    }
+
+    private fun fetchApi() {
+        lifecycleScope.launch {
+            try {
+                val response = viewModel.callPaymentFetchApi()
+                if (response.isSuccessful && response.body() != null) {
+                    paymentIntentClientSecret = response.body()!!.paymentIntent
+                    customerConfig = PaymentSheet.CustomerConfiguration(
+                        response.body()!!.customer,
+                        response.body()!!.ephemeralKey
+                    )
+
+                    val publishableKey = response.body()!!.publishableKey
+                    PaymentConfiguration.init(activity?.applicationContext!!, publishableKey)
+                } else {
+                    Toast.makeText(
+                        activity,
+                        "Something went wrong. Please try again",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e : Exception) {
+                Toast.makeText(
+                    activity,
+                    "Something went wrong. Please try again",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } finally {
+                Toast.makeText(activity, "Fetch Api completed", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun presentPaymentSheet() {
+        val googlePayConfiguration = PaymentSheet.GooglePayConfiguration(
+            environment = PaymentSheet.GooglePayConfiguration.Environment.Test,
+            countryCode = "US",
+            currencyCode = "USD" // Required for Setup Intents, optional for Payment Intents
+        )
+        paymentSheet.presentWithPaymentIntent(
+            paymentIntentClientSecret,
+            PaymentSheet.Configuration(
+                merchantDisplayName = "Softglobe Technologies",
+                customer = customerConfig,
+                googlePay = googlePayConfiguration,
+            )
+        )
+    }
+
+    private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+        when(paymentSheetResult) {
+            is PaymentSheetResult.Canceled -> {
+                Toast.makeText(activity, "Cancelled", Toast.LENGTH_SHORT).show()
+                print("Canceled")
+            }
+            is PaymentSheetResult.Failed -> {
+                Toast.makeText(activity, "Failed. Error: ${paymentSheetResult.error}", Toast.LENGTH_SHORT).show()
+                print("Error: ${paymentSheetResult.error}")
+            }
+            is PaymentSheetResult.Completed -> {
+                // Display for example, an order confirmation screen
+                Toast.makeText(activity, "Payment Completed", Toast.LENGTH_SHORT).show()
+                print("Completed")
+            }
         }
     }
 

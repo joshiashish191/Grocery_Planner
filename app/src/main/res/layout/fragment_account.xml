@@ -254,6 +254,14 @@
                 android:background="@color/black"
                 app:layout_constraintTop_toBottomOf="@id/txt_logout" />
 
+            <Button
+                android:id="@+id/pay_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/txt_logout"
+                android:paddingBottom="10dp"
+                android:text="Pay Now"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>
