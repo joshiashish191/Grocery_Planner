@@ -16,6 +16,7 @@ import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentChangePasswordBinding
 import net.softglobe.groceryplanner.model.Constants.KEY_EMAIL
 import net.softglobe.groceryplanner.model.Constants.KEY_IS_FROM_FORGOT_PASS_SCREEN
+import net.softglobe.groceryplanner.model.LoadingInstance
 import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
@@ -65,6 +66,7 @@ class ChangePasswordFragment : Fragment() {
                 if (newPassword == confirmNewPassword) {
                     lifecycleScope.launch {
                         try {
+                            LoadingInstance.showLoading(requireActivity())
                             val response =
                                 viewModel.resetPassword(email, newPassword)
                             if (response.isSuccessful && response.body() != null) {
@@ -89,6 +91,8 @@ class ChangePasswordFragment : Fragment() {
                                 "Something went wrong. Please try again",
                                 Toast.LENGTH_SHORT
                             ).show()
+                        } finally {
+                            LoadingInstance.hideLoading()
                         }
                     }
                 } else {
@@ -110,6 +114,7 @@ class ChangePasswordFragment : Fragment() {
                 if (newPassword == confirmNewPassword) {
                     lifecycleScope.launch {
                         try {
+                            LoadingInstance.showLoading(requireActivity())
                             val response =
                                 viewModel.changePassword(preferences.getUserEmail(), oldPassword, newPassword, preferences.getAuthToken())
                             if (response.isSuccessful && response.body() != null) {
@@ -134,6 +139,8 @@ class ChangePasswordFragment : Fragment() {
                                 "Something went wrong. Please try again",
                                 Toast.LENGTH_SHORT
                             ).show()
+                        } finally {
+                            LoadingInstance.hideLoading()
                         }
                     }
                 } else {

@@ -18,6 +18,7 @@ import com.stripe.android.paymentsheet.PaymentSheetResult
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentUpgradePlanBinding
+import net.softglobe.groceryplanner.model.LoadingInstance
 import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
@@ -87,6 +88,7 @@ class UpgradePlanFragment : Fragment() {
 
     private suspend fun fetchApi() {
         try {
+            LoadingInstance.showLoading(requireActivity())
             val response = viewModel.callPaymentFetchApi(planType)
             if (response.isSuccessful && response.body() != null) {
                 if (!response.body()!!.result.error) {
@@ -120,6 +122,8 @@ class UpgradePlanFragment : Fragment() {
                 "Something went wrong. Please try again",
                 Toast.LENGTH_SHORT
             ).show()
+        } finally {
+            LoadingInstance.hideLoading()
         }
     }
 
@@ -144,17 +148,36 @@ class UpgradePlanFragment : Fragment() {
             is PaymentSheetResult.Completed -> {
                 print("Completed")
                 lifecycleScope.launch {
-                    val response = viewModel.updatePaymentDetails(planType)
-                    if (response.isSuccessful && response.body() != null) {
-                        if (!response.body()!!.error) {
-                            preferences.setUserPaidStatus(true)
-                            findNavController().navigate(R.id.action_upgradePlanFragment_to_paymentSuccessFragment)
-                            Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
+                    LoadingInstance.showLoading(requireActivity())
+                    try {
+                        val response = viewModel.updatePaymentDetails(planType)
+                        if (response.isSuccessful && response.body() != null) {
+                            if (!response.body()!!.error) {
+                                preferences.setUserPaidStatus(true)
+                                findNavController().navigate(R.id.action_upgradePlanFragment_to_paymentSuccessFragment)
+                                Toast.makeText(
+                                    activity,
+                                    response.body()!!.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    activity,
+                                    response.body()!!.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         } else {
-                            Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                activity,
+                                "Something went wrong. Please try again",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                    } else {
+                    } catch (e : Exception) {
                         Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
+                    } finally {
+                        LoadingInstance.hideLoading()
                     }
                 }
             }

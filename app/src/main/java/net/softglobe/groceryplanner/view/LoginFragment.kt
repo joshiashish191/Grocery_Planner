@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentLoginBinding
+import net.softglobe.groceryplanner.model.LoadingInstance
 import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
@@ -42,23 +43,30 @@ class LoginFragment : Fragment() {
 
             if (email.isNotBlank() && password.isNotBlank()) {
                 lifecycleScope.launch {
-                    val response = viewModel.loginUser(email, password)
-                    if (response.isSuccessful && response.body() != null) {
-                        if (!response.body()!!.result.error) {
-                            Toast.makeText(activity, response.body()!!.result.message, Toast.LENGTH_SHORT).show()
-                            preferences.setUserEmail(email)
-                            preferences.setUserLoginStatus(true)
-                            preferences.setAuthToken(response.body()!!.user.authToken)
-                            if (response.body()!!.user.isPaidUser == 0)
-                                preferences.setUserPaidStatus(false)
-                            else
-                                preferences.setUserPaidStatus(true)
-                            findNavController().navigate(R.id.action_loginFragment_to_accountFragment)
+                    try {
+                        LoadingInstance.showLoading(requireActivity())
+                        val response = viewModel.loginUser(email, password)
+                        if (response.isSuccessful && response.body() != null) {
+                            if (!response.body()!!.result.error) {
+                                Toast.makeText(activity, response.body()!!.result.message, Toast.LENGTH_SHORT).show()
+                                preferences.setUserEmail(email)
+                                preferences.setUserLoginStatus(true)
+                                preferences.setAuthToken(response.body()!!.user.authToken)
+                                if (response.body()!!.user.isPaidUser == 0)
+                                    preferences.setUserPaidStatus(false)
+                                else
+                                    preferences.setUserPaidStatus(true)
+                                findNavController().navigate(R.id.action_loginFragment_to_accountFragment)
+                            } else {
+                                Toast.makeText(activity, response.body()!!.result.message, Toast.LENGTH_SHORT).show()
+                            }
                         } else {
-                            Toast.makeText(activity, response.body()!!.result.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
                         }
-                    } else {
+                    } catch (e : Exception) {
                         Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
+                    } finally {
+                        LoadingInstance.hideLoading()
                     }
                 }
             } else {

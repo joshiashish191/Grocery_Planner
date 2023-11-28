@@ -82,4 +82,6 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.1.0-alpha02")
     //Stripe
     implementation("com.stripe:stripe-android:20.34.4")
+    //Lottie Loading Animation
+    implementation("com.airbnb.android:lottie:6.2.0")
 }

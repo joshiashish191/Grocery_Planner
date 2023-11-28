@@ -15,6 +15,7 @@ import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentForgotPasswordBinding
 import net.softglobe.groceryplanner.model.Constants.KEY_IS_FROM_FORGOT_PASS_SCREEN
 import net.softglobe.groceryplanner.model.Constants.KEY_EMAIL
+import net.softglobe.groceryplanner.model.LoadingInstance
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
 
@@ -41,6 +42,7 @@ class ForgotPasswordFragment : Fragment() {
             if (email.isNotBlank()) {
                 lifecycleScope.launch {
                     try {
+                        LoadingInstance.showLoading(requireActivity())
                         val response = viewModel.forgotPassword(email, code!!)
                         if (response.isSuccessful && response.body() != null) {
                             if (!response.body()!!.error) {
@@ -59,6 +61,8 @@ class ForgotPasswordFragment : Fragment() {
                         }
                     } catch (e : Exception) {
                         Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
+                    } finally {
+                        LoadingInstance.hideLoading()
                     }
                 }
             }

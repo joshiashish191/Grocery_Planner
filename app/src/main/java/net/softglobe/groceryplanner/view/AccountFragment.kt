@@ -1,8 +1,11 @@
 package net.softglobe.groceryplanner.view
 
 import android.app.AlertDialog
+import android.app.Dialog
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentAccountBinding
+import net.softglobe.groceryplanner.model.LoadingInstance
 import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.model.network.request.BackUpRequest
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
@@ -58,6 +62,7 @@ class AccountFragment : Fragment() {
 
         lifecycleScope.launch {
             try {
+                LoadingInstance.showLoading(requireActivity())
                 val response = viewModel.getUserDetails(preferences.getUserEmail())
                 if (response.isSuccessful && response.body() != null) {
                     if (!response.body()!!.result.error) {
@@ -87,6 +92,8 @@ class AccountFragment : Fragment() {
                     "Something went wrong. Please try again",
                     Toast.LENGTH_SHORT
                 ).show()
+            } finally {
+                LoadingInstance.hideLoading()
             }
         }
 
@@ -108,6 +115,7 @@ class AccountFragment : Fragment() {
             if (preferences.isPaidUser()) {
                 lifecycleScope.launch {
                     try {
+                        LoadingInstance.showLoading(requireActivity())
                         val response = viewModel.importBackupFromServer(preferences.getUserEmail())
                         if (response.isSuccessful && response.body() != null) {
                             if (!response.body()!!.error) {
@@ -115,11 +123,15 @@ class AccountFragment : Fragment() {
                                 viewModel.clearAllModifications()
                                 val groceryList = response.body()!!.groceryList
                                 val modificationsList = response.body()!!.modificationsList
-                                groceryList.forEach {grocery ->
-                                    viewModel.insertGroceryItemOnly(grocery)
+                                if (!groceryList.isNullOrEmpty()) {
+                                    groceryList.forEach { grocery ->
+                                        viewModel.insertGroceryItemOnly(grocery)
+                                    }
                                 }
-                                modificationsList.forEach {modification ->
-                                    viewModel.insertModification(modification)
+                                if (!modificationsList.isNullOrEmpty()) {
+                                    modificationsList.forEach { modification ->
+                                        viewModel.insertModification(modification)
+                                    }
                                 }
                                 Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
                             } else {
@@ -129,11 +141,15 @@ class AccountFragment : Fragment() {
                             Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
                         }
                     } catch (e : Exception) {
+                        Log.d("Acc", "$e")
                         Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
+                    } finally {
+                        LoadingInstance.hideLoading()
                     }
                 }
             } else {
-                Toast.makeText(activity, "This is a paid feature!", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_accountFragment_to_upgradePlanFragment)
+                Toast.makeText(activity, "Please upgrade to use this feature!", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -146,6 +162,7 @@ class AccountFragment : Fragment() {
                         groceryList, modificationsList, preferences.getUserEmail(), authToken = preferences.getAuthToken()
                     )
                     try {
+                        LoadingInstance.showLoading(requireActivity())
                         val response = viewModel.backupToServer(backUpOperationsRequest)
 
                         if (response.isSuccessful && response.body() != null) {
@@ -171,10 +188,13 @@ class AccountFragment : Fragment() {
                             "Something went wrong. Please try again",
                             Toast.LENGTH_SHORT
                         ).show()
+                    } finally {
+                        LoadingInstance.hideLoading()
                     }
                 }
             } else {
-                Toast.makeText(activity, "This is a paid feature!", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_accountFragment_to_upgradePlanFragment)
+                Toast.makeText(activity, "Please upgrade to use this feature!", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -203,6 +223,7 @@ class AccountFragment : Fragment() {
     private fun updateName(name : String) {
         lifecycleScope.launch {
             try {
+                LoadingInstance.showLoading(requireActivity())
                 val response = viewModel.changeUserName(preferences.getUserEmail(), name)
                 if (response.isSuccessful && response.body() != null) {
                     if (!response.body()!!.error) {
@@ -224,6 +245,8 @@ class AccountFragment : Fragment() {
                     "Something went wrong. Please try again",
                     Toast.LENGTH_SHORT
                 ).show()
+            } finally {
+                LoadingInstance.hideLoading()
             }
         }
     }

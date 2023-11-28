@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentRegisterBinding
+import net.softglobe.groceryplanner.model.LoadingInstance
 import net.softglobe.groceryplanner.model.network.User
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
@@ -46,6 +47,7 @@ class RegisterFragment : Fragment() {
                     val user = User(email, name, password)
                     lifecycleScope.launch {
                         try {
+                            LoadingInstance.showLoading(requireActivity())
                             val response = viewModel.registerUser(user)
                             if (response.isSuccessful && response.body() != null) {
                                 if (!response.body()!!.error) {
@@ -59,6 +61,8 @@ class RegisterFragment : Fragment() {
                             }
                         } catch (e : Exception) {
                             Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
+                        } finally {
+                            LoadingInstance.hideLoading()
                         }
                     }
                 }
