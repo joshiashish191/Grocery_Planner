@@ -7,4 +7,5 @@ data class MetaDataResponse(
     val annualOriginalPriceForPaidVersion : String,
     val monthlyDiscountedPriceForPaidVersion : String,
     val annualDiscountedPriceForPaidVersion : String,
+    val isPlanActive : Boolean
 )

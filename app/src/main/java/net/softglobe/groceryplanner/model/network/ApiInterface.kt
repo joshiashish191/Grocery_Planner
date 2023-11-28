@@ -42,8 +42,9 @@ interface ApiInterface {
     @POST(URLs.BACKUP_FROM_SERVER)
     suspend fun importBackupFromServer(@Field("email") email : String, @Field("authToken") authToken: String) : Response<BackUpRequest>
 
-    @GET(URLs.METADATA)
-    suspend fun getMetadata() : Response<MetaDataResponse>
+    @FormUrlEncoded
+    @POST(URLs.METADATA)
+    suspend fun getMetadata(@Field("email") email: String) : Response<MetaDataResponse>
 
     @FormUrlEncoded
     @POST(URLs.USER_METADATA)
@@ -57,6 +58,11 @@ interface ApiInterface {
     @POST(URLs.USER_OPERATIONS)
     suspend fun changeUserName(@Field("email") email: String, @Field("authToken") authToken: String, @Field("operation") operation: String, @Field("name") name: String) : Response<Result>
 
+    @FormUrlEncoded
     @POST(URLs.PAYMENT_FETCH)
-    suspend fun callPaymentFetchApi() : Response<PaymentFetchResponse>
+    suspend fun callPaymentFetchApi(@Field("email") email: String, @Field("authToken") authToken: String, @Field("planType") planType: String,) : Response<PaymentFetchResponse>
+
+    @FormUrlEncoded
+    @POST(URLs.UPDATE_USER_PAYMENT_DETAILS)
+    suspend fun updatePaymentDetails(@Field("email") email: String, @Field("authToken") authToken: String, @Field("planType") planType: String,) : Response<Result>
 }

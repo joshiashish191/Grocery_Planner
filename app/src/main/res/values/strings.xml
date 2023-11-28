@@ -7,4 +7,6 @@
     <string name="export_description">This exports the local data to the remote server, and replace the remote data with this newer one. If you are not sure what to choose, then this is probably the most suitable option.</string>
     <string name="upgrade_plan_description">Upgrade now to enjoy premium features like no ads, server backups and much more at the discounted rates. Click to upgrade now!</string>
     <string name="already_premium_plan_description">You are a proud Premium member! Enjoy the prime benefits.</string>
+    <string name="prime_benefits">Text with a \\u2022</string>
+    <string name="payment_thanks_screen">Thanks for choosing prime membership. Please restart the app to make changes take effect. And enjoy the Premium benefits!</string>
 </resources>

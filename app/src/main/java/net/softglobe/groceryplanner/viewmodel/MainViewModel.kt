@@ -151,7 +151,7 @@ class MainViewModel(context: Context) : ViewModel() {
     }
 
     suspend fun getMetadata() : Response<MetaDataResponse> {
-        return RetrofitInstance.api.getMetadata()
+        return RetrofitInstance.api.getMetadata(preferences.getUserEmail())
     }
 
     suspend fun getUserMetadata(email: String) : Response<UserMetaDataResponse> {
@@ -166,7 +166,11 @@ class MainViewModel(context: Context) : ViewModel() {
         return RetrofitInstance.api.changeUserName(email, preferences.getAuthToken(), "name", name)
     }
 
-    suspend fun callPaymentFetchApi() : Response<PaymentFetchResponse> {
-        return RetrofitInstance.api.callPaymentFetchApi()
+    suspend fun callPaymentFetchApi(planType : String) : Response<PaymentFetchResponse> {
+        return RetrofitInstance.api.callPaymentFetchApi(preferences.getUserEmail(), preferences.getAuthToken(), planType)
+    }
+
+    suspend fun updatePaymentDetails(planType : String) : Response<Result> {
+        return RetrofitInstance.api.updatePaymentDetails(preferences.getUserEmail(), preferences.getAuthToken(), planType)
     }
 }
