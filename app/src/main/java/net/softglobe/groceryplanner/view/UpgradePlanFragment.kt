@@ -147,6 +147,7 @@ class UpgradePlanFragment : Fragment() {
                     val response = viewModel.updatePaymentDetails(planType)
                     if (response.isSuccessful && response.body() != null) {
                         if (!response.body()!!.error) {
+                            preferences.setUserPaidStatus(true)
                             findNavController().navigate(R.id.action_upgradePlanFragment_to_paymentSuccessFragment)
                             Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
                         } else {

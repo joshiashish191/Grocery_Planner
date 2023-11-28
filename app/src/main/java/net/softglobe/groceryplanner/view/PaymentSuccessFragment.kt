@@ -1,18 +1,31 @@
 package net.softglobe.groceryplanner.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import net.softglobe.groceryplanner.R
-class PaymentSuccessFragment : Fragment() {
+import net.softglobe.groceryplanner.databinding.FragmentPaymentSuccessBinding
 
+class PaymentSuccessFragment : Fragment() {
+    lateinit var binding : FragmentPaymentSuccessBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_payment_success, container, false)
+        binding = DataBindingUtil.inflate(layoutInflater,
+            R.layout.fragment_payment_success, container, false)
+        initView()
+        return binding.root
+    }
+
+    private fun initView() {
+        binding.btnContinueToApp.setOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 }

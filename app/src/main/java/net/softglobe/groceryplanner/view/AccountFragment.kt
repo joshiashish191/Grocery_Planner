@@ -63,6 +63,10 @@ class AccountFragment : Fragment() {
                     if (!response.body()!!.result.error) {
                         binding.txtName.text = response.body()!!.user.name
                         binding.txtEmail.text = response.body()!!.user.email
+                        if (preferences.isPaidUser() && response.body()!!.user.planExpirationDate != null) {
+                            binding.txtPlanExpiry.visibility = View.VISIBLE
+                            binding.txtPlanExpiry.text = "Valid till ${response.body()!!.user.planExpirationDate}"
+                        }
                     } else {
                         Toast.makeText(
                             activity,
