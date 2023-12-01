@@ -8,4 +8,5 @@
     <string name="upgrade_plan_description">Upgrade now to enjoy premium features like no ads, server backups and much more at the discounted rates. Click to upgrade now!</string>
     <string name="already_premium_plan_description">You are a proud Premium member! Enjoy the prime benefits.</string>
     <string name="payment_thanks_screen">Thanks for choosing prime membership. Enjoy the Premium benefits!</string>
+    <string name="banner_ad_unit_ad">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

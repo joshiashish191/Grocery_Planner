@@ -84,4 +84,6 @@ dependencies {
     implementation("com.stripe:stripe-android:20.34.4")
     //Lottie Loading Animation
     implementation("com.airbnb.android:lottie:6.2.0")
+    //Admob
+    implementation("com.google.android.gms:play-services-ads:22.5.0")
 }

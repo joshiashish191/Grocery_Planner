@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.ads.AdRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
@@ -50,6 +51,12 @@ class AddGroceryFragment : Fragment() {
 
     private fun inItView() {
         preferences = Preferences(activity?.applicationContext!!)
+        if (!preferences.isPaidUser()) {
+            binding.bannerAdView.visibility = View.VISIBLE
+            val adRequest = AdRequest.Builder().build()
+            binding.bannerAdView.loadAd(adRequest)
+        }
+
         arguments?.let {
             id = it.getInt("id")
         }

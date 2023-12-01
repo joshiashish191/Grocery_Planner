@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.ads.AdRequest
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentChangePasswordBinding
@@ -40,6 +41,13 @@ class ChangePasswordFragment : Fragment() {
 
     private fun initView() {
         preferences = Preferences(activity?.applicationContext!!)
+
+        if (!preferences.isPaidUser()) {
+            val adRequest = AdRequest.Builder().build()
+            binding.bannerAdView.loadAd(adRequest)
+            binding.bannerAdView.visibility = View.VISIBLE
+        }
+
         var isFromForgotPassScreen = false
         var email = ""
         if (arguments != null) {

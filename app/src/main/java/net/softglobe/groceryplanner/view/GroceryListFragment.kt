@@ -8,7 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -16,13 +15,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.coroutines.launch
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import net.softglobe.groceryplanner.BuildConfig
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentGroceryListBinding
-import net.softglobe.groceryplanner.model.network.request.BackUpRequest
 import net.softglobe.groceryplanner.model.Grocery
 import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.model.adapters.GroceryListAdapter
@@ -47,6 +47,12 @@ class GroceryListFragment : Fragment() {
         preferences = Preferences(activity?.applicationContext!!)
         viewModel.getGroceryList().observe(viewLifecycleOwner) {
             setRecyclerViewForGroceryList(it)
+        }
+
+        if (!preferences.isPaidUser()) {
+            binding.bannerAdView.visibility = View.VISIBLE
+            val adRequest = AdRequest.Builder().build()
+            binding.bannerAdView.loadAd(adRequest)
         }
 
         binding.btnAddRecord.setOnClickListener {

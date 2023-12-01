@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.ads.MobileAds
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
@@ -65,5 +66,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         setContentView(R.layout.activity_main)
+        MobileAds.initialize(this) {}
     }
 }
