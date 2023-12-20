@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -126,6 +127,8 @@ class AddGroceryFragment : Fragment() {
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
         //endregion
+
+        callOnTextChangeListeners()
     }
 
     private fun checkModificationsOnBackPressed() {
@@ -203,10 +206,13 @@ class AddGroceryFragment : Fragment() {
 
         if (name.isBlank()) {
             Toast.makeText(activity, "Please enter Item Name", Toast.LENGTH_SHORT).show()
+            binding.tilName.error = "Item Name is required"
         } else if (quantity.isBlank()) {
             Toast.makeText(activity, "Please enter Item Quantity", Toast.LENGTH_SHORT).show()
+            binding.tilQty.error = "Quantity is required"
         } else if (unit.isBlank()) {
             Toast.makeText(activity, "Please enter Item Unit", Toast.LENGTH_SHORT).show()
+            binding.tilUnit.error = "Unit is required"
         } else {
             var newLowStockValue = 0.0
             if (lowStockValue.isNotBlank()) {
@@ -217,7 +223,12 @@ class AddGroceryFragment : Fragment() {
             if (id == null) {
                 if (!preferences.isPaidUser()
                     && totalGroceryItemsCount!! >= Integer.parseInt(preferences.getGroceryRecordsLimitForFree())) {
-                    Toast.makeText(activity, "Limit reached! Need to purchase a paid plan.", Toast.LENGTH_SHORT).show()
+                    if (!preferences.isUserLoggedIn()) {
+                        findNavController().navigate(R.id.action_addGroceryFragment_to_loginFragment)
+                        Toast.makeText(activity, "Please login to continue", Toast.LENGTH_SHORT).show()
+                    } else {
+                        findNavController().navigate(R.id.action_addGroceryFragment_to_upgradePlanFragment)
+                    }
                     return
                 }
                 modificationMsg = "Item Added"
@@ -252,6 +263,27 @@ class AddGroceryFragment : Fragment() {
             }
             findNavController().popBackStack()
             Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun callOnTextChangeListeners() {
+        binding.etName.doOnTextChanged { text, start, before, count ->
+            if (count > 0) {
+                binding.tilName.error = null
+                binding.tilName.isErrorEnabled = false
+            }
+        }
+        binding.etQty.doOnTextChanged { text, start, before, count ->
+            if (text?.length!! > 0) {
+                binding.tilDesc.error = null
+                binding.tilDesc.isErrorEnabled = false
+            }
+        }
+        binding.etUnit.doOnTextChanged { text, start, before, count ->
+            if (count > 0) {
+                binding.tilUnit.error = null
+                binding.tilUnit.isErrorEnabled = false
+            }
         }
     }
 

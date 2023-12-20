@@ -48,7 +48,7 @@ class ForgotPasswordFragment : Fragment() {
                             if (!response.body()!!.error) {
                                 Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
                                 binding.mailSentText.visibility = View.VISIBLE
-                                binding.etCode.visibility = View.VISIBLE
+                                binding.tilEtCode.visibility = View.VISIBLE
                                 binding.submitCodeBtn.visibility = View.VISIBLE
 
                                 binding.etEnterEmail.isEnabled = false

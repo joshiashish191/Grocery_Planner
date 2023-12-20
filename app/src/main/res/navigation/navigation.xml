@@ -24,7 +24,16 @@
         android:id="@+id/addGroceryFragment"
         android:name="net.softglobe.groceryplanner.view.AddGroceryFragment"
         android:label="fragment_add_grocery"
-        tools:layout="@layout/fragment_add_grocery" />
+        tools:layout="@layout/fragment_add_grocery" >
+        <action
+            android:id="@+id/action_addGroceryFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/addGroceryFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_addGroceryFragment_to_upgradePlanFragment"
+            app:destination="@id/upgradePlanFragment" />
+    </fragment>
     <fragment
         android:id="@+id/loginFragment"
         android:name="net.softglobe.groceryplanner.view.LoginFragment"

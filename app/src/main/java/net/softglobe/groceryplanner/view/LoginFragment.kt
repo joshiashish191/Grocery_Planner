@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.ads.AdRequest
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentLoginBinding
@@ -18,12 +20,18 @@ import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
 
+
 class LoginFragment : Fragment() {
 
     private lateinit var binding : FragmentLoginBinding
 
     private val viewModel by viewModels<MainViewModel>{ MainViewModelFactory(activity?.baseContext!!) }
     private lateinit var preferences : Preferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        //(activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +45,11 @@ class LoginFragment : Fragment() {
 
     private fun initView() {
         preferences = Preferences(activity?.applicationContext!!)
+        if (!preferences.isPaidUser()) {
+            binding.bannerAdView.visibility = View.VISIBLE
+            val adRequest = AdRequest.Builder().build()
+            binding.bannerAdView.loadAd(adRequest)
+        }
         binding.btnLogin.setOnClickListener {
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()

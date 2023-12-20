@@ -1,14 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.GroceryPlanner" parent="Theme.Material3.DayNight">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-    </style>
 
-    <style name="Theme.GroceryPlanner" parent="Base.Theme.GroceryPlanner">
-        <item name="colorAccent">@color/colorAccent</item>
+
+    <style name="Theme.GroceryPlanner" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorTertiary">@color/colorAccent</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorOnSecondary">@color/white</item>
     </style>
 
     <style name="plan_title">
@@ -22,6 +20,12 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="screen_title" parent="grocery_item_title">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">40sp</item>
+    </style>
+
     <style name="grocery_item_subtitle">
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/black</item>
@@ -31,6 +35,15 @@
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
+    <style name="screen_mini_title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="secondary_btn" parent="Widget.MaterialComponents.Button.OutlinedButton.Icon" />
+    <style name="primary_btn" parent="Widget.MaterialComponents.Button" />
 
     <style name="Theme.CustomSplashScreenTheme" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/white</item>

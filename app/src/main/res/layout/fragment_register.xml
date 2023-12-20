@@ -11,50 +11,132 @@
 
         <TextView
             android:id="@+id/title_register"
+            style="@style/screen_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Register"
             app:layout_constraintTop_toTopOf="parent"
-            style="@style/grocery_item_title"
             android:gravity="center_horizontal" />
 
-        <EditText
-            android:id="@+id/et_name"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/title_register"
-            android:hint="Enter Name" />
+            android:hint="Enter Name"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20sp"
+            app:startIconDrawable="@drawable/profile_icon">
 
-        <EditText
-            android:id="@+id/et_email"
-            android:layout_width="match_parent"
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_email"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/et_name"
+            android:layout_marginTop="5dp"
             android:hint="Enter Email"
-            android:inputType="textEmailAddress" />
+            app:layout_constraintTop_toBottomOf="@id/til_name"
+            app:layout_constraintStart_toStartOf="@id/til_name"
+            app:layout_constraintEnd_toEndOf="@id/til_name"
+            app:startIconDrawable="@drawable/email_icon">
 
-        <EditText
-            android:id="@+id/et_password"
-            android:layout_width="match_parent"
+            <EditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/et_email"
+            android:layout_marginTop="5dp"
             android:hint="Enter Password"
-            android:inputType="textPassword" />
+            app:layout_constraintTop_toBottomOf="@id/til_email"
+            app:layout_constraintStart_toStartOf="@id/til_name"
+            app:layout_constraintEnd_toEndOf="@id/til_name"
+            app:startIconDrawable="@drawable/lock_icon">
 
-        <EditText
-            android:id="@+id/et_reenter_password"
-            android:layout_width="match_parent"
+            <EditText
+                android:id="@+id/et_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_reenter_password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/et_password"
+            android:layout_marginTop="5dp"
             android:hint="Re-Enter Password"
-            android:inputType="textPassword" />
+            app:layout_constraintTop_toBottomOf="@id/til_password"
+            app:layout_constraintStart_toStartOf="@id/til_name"
+            app:layout_constraintEnd_toEndOf="@id/til_name"
+            app:startIconDrawable="@drawable/lock_icon">
+
+            <EditText
+                android:id="@+id/et_reenter_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
+            style="@style/primary_btn"
             android:id="@+id/btn_register"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/til_reenter_password"
+            android:text="Register"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            app:layout_constraintStart_toStartOf="@id/til_name"
+            app:layout_constraintEnd_toEndOf="@id/til_name"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/already_accnt_txt"
+            style="@style/mini_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="Already have an account? "
+            app:layout_constraintBottom_toTopOf="@id/banner_ad_view"
+            android:layout_marginBottom="20dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="@id/btn_register"/>
+
+        <TextView
+            android:id="@+id/login_txt"
+            style="@style/screen_mini_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="Login Here"
+            app:layout_constraintStart_toEndOf="@+id/already_accnt_txt"
+            app:layout_constraintTop_toTopOf="@id/already_accnt_txt" />
+
+        <com.google.android.gms.ads.AdView
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/banner_ad_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/et_reenter_password"
-            android:text="Register"
-            android:textSize="20sp" />
+            ads:layout_constraintBottom_toBottomOf="parent"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_ad_unit_ad"
+            android:visibility="visible"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

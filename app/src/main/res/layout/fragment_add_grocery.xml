@@ -16,66 +16,120 @@
         tools:context=".view.AddGroceryFragment"
         android:layout_margin="8dp">
 
-
-        <EditText
-            android:id="@+id/et_name"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
+            android:hint="Item Name*"
             app:layout_constraintTop_toTopOf="parent"
-            android:hint="Item Name"
-            android:text="@{grocery.name}"/>
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <EditText
-            android:id="@+id/et_desc"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="@{grocery.name}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_desc"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            app:layout_constraintTop_toBottomOf="@id/et_name"
             android:hint="Item Description"
-            android:text="@{grocery.description}"/>
+            app:layout_constraintTop_toBottomOf="@id/til_name"
+            android:layout_marginTop="5dp">
 
-        <EditText
-            android:id="@+id/et_qty"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="@{grocery.description}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_qty"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="numberDecimal"
-            app:layout_constraintTop_toBottomOf="@id/et_desc"
-            android:hint="Quantity"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:hint="Quantity*"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_desc"
+            app:layout_constraintEnd_toStartOf="@+id/til_unit"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="2dp">
 
-        <EditText
-            android:id="@+id/et_unit"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_qty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_unit"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            app:layout_constraintTop_toBottomOf="@id/et_desc"
-            android:hint="Unit (kg, gram, litre)"
-            app:layout_constraintStart_toEndOf="@id/et_qty"
-            android:text="@{grocery.unit}"/>
+            android:hint="Unit*"
+            app:layout_constraintTop_toTopOf="@id/til_qty"
+            app:layout_constraintBottom_toBottomOf="@+id/til_qty"
+            app:layout_constraintStart_toEndOf="@id/til_qty"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="2dp">
 
-        <EditText
-            android:id="@+id/et_kept_at"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_unit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="@{grocery.unit}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_kept_at"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            app:layout_constraintTop_toBottomOf="@id/et_qty"
             android:hint="Where it is kept"
-            android:text="@{grocery.storedAt}"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/til_qty"
+            app:layout_constraintTop_toBottomOf="@id/til_qty"
+            android:layout_marginTop="5dp">
 
-        <EditText
-            android:id="@+id/et_low_stock_value"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_kept_at"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="@{grocery.storedAt}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_low_stock_value"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="numberDecimal"
-            app:layout_constraintTop_toBottomOf="@id/et_kept_at"
-            android:hint="Low stock indication value" />
+            android:hint="Low stock indication value"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/til_qty"
+            app:layout_constraintTop_toBottomOf="@id/til_kept_at"
+            android:layout_marginTop="5dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_low_stock_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/btn_save"
@@ -84,8 +138,10 @@
             android:text="Save"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_cancel"
-            app:layout_constraintTop_toBottomOf="@id/et_low_stock_value"
-            android:layout_marginEnd="3dp" />
+            app:layout_constraintTop_toBottomOf="@id/til_low_stock_value"
+            android:layout_marginEnd="3dp"
+            style="@style/primary_btn"
+            android:layout_marginTop="5dp"/>
 
         <Button
             android:id="@+id/btn_cancel"
@@ -95,7 +151,8 @@
             app:layout_constraintStart_toEndOf="@id/btn_save"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/btn_save"
-            android:layout_marginStart="3dp" />
+            android:layout_marginStart="3dp"
+            style="@style/secondary_btn" />
 
         <TextView
             android:id="@+id/mod_title"
@@ -121,7 +178,8 @@
             android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_modifications"

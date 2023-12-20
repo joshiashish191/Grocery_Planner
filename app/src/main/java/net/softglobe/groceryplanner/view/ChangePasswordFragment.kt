@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentChangePasswordBinding
@@ -115,49 +117,85 @@ class ChangePasswordFragment : Fragment() {
                 val newPassword = binding.etNewPassword.text.toString()
                 val confirmNewPassword = binding.etReEnterNewPassword.text.toString()
 
-                if (TextUtils.isEmpty(oldPassword) || TextUtils.isEmpty(newPassword) || TextUtils.isEmpty(confirmNewPassword)) {
-                    Toast.makeText(activity, "Please fill all the fields", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-                if (newPassword == confirmNewPassword) {
-                    lifecycleScope.launch {
-                        try {
-                            LoadingInstance.showLoading(requireActivity())
-                            val response =
-                                viewModel.changePassword(preferences.getUserEmail(), oldPassword, newPassword, preferences.getAuthToken())
-                            if (response.isSuccessful && response.body() != null) {
-                                if (!response.body()!!.error) {
-                                    Toast.makeText(
-                                        activity,
-                                        response.body()!!.message,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    findNavController().navigate(R.id.action_changePasswordFragment_to_accountFragment)
-                                } else {
-                                    Toast.makeText(
-                                        activity,
-                                        response.body()!!.message,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                        } catch (e: Exception) {
-                            Toast.makeText(
-                                activity,
-                                "Something went wrong. Please try again",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } finally {
-                            LoadingInstance.hideLoading()
-                        }
-                    }
+                if (oldPassword.isBlank()) {
+                    binding.tilCurrentPassword.error = "Please enter Current Password"
+                } else if (newPassword.isBlank()) {
+                    binding.tilNewPassword.error = "Please enter New Password"
+                } else if (confirmNewPassword.isBlank()) {
+                    binding.tilReEnterNewPassword.error = "Please confirm New Password"
                 } else {
-                    Toast.makeText(
-                        activity,
-                        "Passwords doesn't match. Please verify again.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    if (newPassword == confirmNewPassword) {
+                        lifecycleScope.launch {
+                            try {
+                                LoadingInstance.showLoading(requireActivity())
+                                val response =
+                                    viewModel.changePassword(
+                                        preferences.getUserEmail(),
+                                        oldPassword,
+                                        newPassword,
+                                        preferences.getAuthToken()
+                                    )
+                                if (response.isSuccessful && response.body() != null) {
+                                    if (!response.body()!!.error) {
+                                        Toast.makeText(
+                                            activity,
+                                            response.body()!!.message,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        findNavController().navigate(R.id.action_changePasswordFragment_to_accountFragment)
+                                    } else {
+                                        Toast.makeText(
+                                            activity,
+                                            response.body()!!.message,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                Toast.makeText(
+                                    activity,
+                                    "Something went wrong. Please try again",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } finally {
+                                LoadingInstance.hideLoading()
+                            }
+                        }
+                    } else {
+                        Toast.makeText(
+                            activity,
+                            "Passwords don't match. Please verify again.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        binding.tilNewPassword.error = "Password don't match"
+                        binding.tilReEnterNewPassword.error = "Password don't match"
+                    }
                 }
+            }
+        }
+
+        callOnTextChangeListeners()
+    }
+
+    private fun callOnTextChangeListeners() {
+        binding.etCurrentPassword.doOnTextChanged { text, start, before, count ->
+            if (count > 0) {
+                binding.tilCurrentPassword.error = null
+                binding.tilCurrentPassword.isErrorEnabled = false
+            }
+        }
+
+        binding.etNewPassword.doOnTextChanged { text, start, before, count ->
+            if (count > 0) {
+                binding.tilNewPassword.error = null
+                binding.tilNewPassword.isErrorEnabled = false
+            }
+        }
+
+        binding.etReEnterNewPassword.doOnTextChanged { text, start, before, count ->
+            if (count > 0) {
+                binding.tilReEnterNewPassword.error = null
+                binding.tilReEnterNewPassword.isErrorEnabled = false
             }
         }
     }

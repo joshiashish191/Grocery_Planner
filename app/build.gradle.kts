@@ -38,7 +38,7 @@ android {
 
         debug {
             isDebuggable = true
-            buildConfigField("String", "BASE_URL", "\"http://192.168.0.123/groceryplanner/api/\"")
+            buildConfigField("String", "BASE_URL", "\"http://192.168.0.104/groceryplanner/api/\"")
         }
     }
     compileOptions {
@@ -59,7 +59,7 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment:2.7.1")
     testImplementation("junit:junit:4.13.2")
