@@ -28,7 +28,7 @@ class GroceryListAdapter(private val mContext: Context, private val viewModel: M
     inner class GroceryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind (grocery: Grocery) {
             binding.grocery = grocery
-            binding.itemAddedOn.text = "Added on: "+SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(grocery.addedOn)
+            binding.itemAddedOn.text = "Modified on: "+SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(grocery.addedOn)
             binding.quantity.text = ""+grocery.quantity+" "+grocery.unit
             if (TextUtils.isEmpty(grocery.description))
                 binding.itemSubtitle.visibility = View.GONE
@@ -36,6 +36,9 @@ class GroceryListAdapter(private val mContext: Context, private val viewModel: M
                 binding.lowStockWarning.text = "Only ${grocery.lowStockValue} ${grocery.unit} left"
                 binding.lowStockWarning.visibility = View.VISIBLE
                 binding.quantity.setTextColor(ContextCompat.getColor(mContext, R.color.red))
+            } else {
+                binding.lowStockWarning.visibility = View.GONE
+                binding.quantity.setTextColor(ContextCompat.getColor(mContext, R.color.black))
             }
         }
     }
@@ -95,4 +98,6 @@ class GroceryListAdapter(private val mContext: Context, private val viewModel: M
         }
 
     }
+
+    override fun getItemViewType(position: Int): Int = position
 }

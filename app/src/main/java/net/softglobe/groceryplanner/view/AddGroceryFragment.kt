@@ -326,7 +326,10 @@ class AddGroceryFragment : Fragment() {
                 if (result.isNotBlank())
                     result += ", "
                 val format = DecimalFormat("0.#")
-                result += "Item low stock value modified ${format.format(currentGroceryItem.lowStockValue)} to ${format.format(lowStockValue.toDouble())}"
+                var newLowStockvalue = "0"
+                if (!lowStockValue.isBlank())
+                    newLowStockvalue = format.format(lowStockValue.toDouble())
+                result += "Item low stock value modified ${format.format(currentGroceryItem.lowStockValue)} to $newLowStockvalue"
             }
         }
         return result

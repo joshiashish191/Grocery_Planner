@@ -46,16 +46,17 @@ class MainViewModel(context: Context) : ViewModel() {
         return repository.getModificationsList(id)
     }
 
-    fun insertGroceryItem(grocery: Grocery, modification: Modification) : Long {
-        var id = 0L
+    fun insertGroceryItem(grocery: Grocery, modification: Modification) {
         viewModelScope.launch(Dispatchers.IO) {
-            id = repository.insertGroceryItem(grocery)
+            val id = repository.insertGroceryItem(grocery)
             modification.itemId = id.toInt()
             val modificationCount = repository.getModificationsCountByGroceryItemId(id.toInt())
-            if (!preferences.isPaidUser() && modificationCount < Integer.parseInt(preferences.getModificationRecordsLimitForFree()))
+            if (preferences.isPaidUser()) {
                 repository.insertModification(modification)
+            } else if (!preferences.isPaidUser() && modificationCount < Integer.parseInt(preferences.getModificationRecordsLimitForFree())) {
+                repository.insertModification(modification)
+            }
         }
-        return id
     }
 
     suspend fun insertGroceryItemOnly(grocery: Grocery) : Long {

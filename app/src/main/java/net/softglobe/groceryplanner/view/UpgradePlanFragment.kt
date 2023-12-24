@@ -30,9 +30,9 @@ class UpgradePlanFragment : Fragment() {
     private val viewModel by viewModels<MainViewModel> { MainViewModelFactory(activity?.baseContext!!) }
 
     private lateinit var paymentSheet: PaymentSheet
-    lateinit var customerConfig: PaymentSheet.CustomerConfiguration
-    lateinit var paymentIntentClientSecret: String
-    lateinit var planType: String
+    var customerConfig: PaymentSheet.CustomerConfiguration? = null
+    var paymentIntentClientSecret: String = ""
+    var planType: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
