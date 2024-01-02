@@ -18,9 +18,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import net.softglobe.groceryplanner.BuildConfig
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentGroceryListBinding
 import net.softglobe.groceryplanner.model.Grocery
@@ -116,6 +113,10 @@ class GroceryListFragment : Fragment() {
                         else
                             findNavController().navigate(R.id.action_groceryListFragment_to_loginFragment)
                     }
+
+                    R.id.about_app -> {
+                        findNavController().navigate(R.id.action_groceryListFragment_to_aboutAppFragment)
+                    }
                 }
                 return true
             }
@@ -130,9 +131,9 @@ class GroceryListFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity?.baseContext!!)
             (binding.rvGroceryList.adapter as GroceryListAdapter).submitList(it)
             if (it?.isEmpty()!!)
-                binding.noItemsText.visibility = View.VISIBLE
+                binding.clNoItems.visibility = View.VISIBLE
             else
-                binding.noItemsText.visibility = View.GONE
+                binding.clNoItems.visibility = View.GONE
         }
     }
 }

@@ -33,7 +33,7 @@
 
                 <TextView
                     android:id="@+id/plan_txt_subtitle"
-                    style="@style/mini_title"
+                    style="@style/mini_title_with_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -44,7 +44,8 @@
                     android:id="@+id/cl_plan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/plan_txt_subtitle">
+                    app:layout_constraintTop_toBottomOf="@id/plan_txt_subtitle"
+                    android:background="?attr/selectableItemBackground" >
 
                     <TextView
                         android:id="@+id/txt_plan_name"
@@ -87,7 +88,7 @@
 
                 <TextView
                     android:id="@+id/profile_txt_subtitle"
-                    style="@style/mini_title"
+                    style="@style/mini_title_with_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -104,7 +105,8 @@
                     android:focusable="true"
                     app:drawableEndCompat="@drawable/edit_pen_icon"
                     app:layout_constraintTop_toBottomOf="@id/profile_txt_subtitle"
-                    tools:text="User Name" />
+                    tools:text="User Name"
+                    android:background="?attr/selectableItemBackground"/>
 
                 <TextView
                     android:id="@+id/divider_line_1"
@@ -137,7 +139,7 @@
 
                 <TextView
                     android:id="@+id/backup_txt_subtitle"
-                    style="@style/mini_title"
+                    style="@style/mini_title_with_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -148,7 +150,8 @@
                     android:id="@+id/cl_import_backup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/backup_txt_subtitle">
+                    app:layout_constraintTop_toBottomOf="@id/backup_txt_subtitle"
+                    android:background="?attr/selectableItemBackground">
 
                     <TextView
                         android:id="@+id/txt_import_backup"
@@ -157,9 +160,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:clickable="true"
-                        android:drawableStart="@drawable/import_backup_icon"
+                        android:drawableStart="@drawable/cloud_download_icon"
                         android:focusable="true"
-                        android:text="  Import Backup"
+                        android:text="  Import Data from Cloud"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -184,7 +187,8 @@
                     android:id="@+id/cl_export_backup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/divider_line_3">
+                    app:layout_constraintTop_toBottomOf="@id/divider_line_3"
+                    android:background="?attr/selectableItemBackground">
 
                     <TextView
                         android:id="@+id/txt_export_backup"
@@ -193,9 +197,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:clickable="true"
-                        android:drawableStart="@drawable/export_backup_icon"
+                        android:drawableStart="@drawable/cloud_backup_icon"
                         android:focusable="true"
-                        android:text="  Export Backup"
+                        android:text="  Save backup to cloud"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -218,7 +222,7 @@
 
                 <TextView
                     android:id="@+id/settings_txt_subtitle"
-                    style="@style/mini_title"
+                    style="@style/mini_title_with_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -235,7 +239,8 @@
                     android:drawableStart="@drawable/password_icon"
                     android:focusable="true"
                     android:text="  Change Password"
-                    app:layout_constraintTop_toBottomOf="@id/settings_txt_subtitle" />
+                    app:layout_constraintTop_toBottomOf="@id/settings_txt_subtitle"
+                    android:background="?attr/selectableItemBackground" />
 
                 <TextView
                     android:id="@+id/divider_line_5"
@@ -256,7 +261,8 @@
                     android:drawableStart="@drawable/logout_icon"
                     android:focusable="true"
                     android:text="  Logout"
-                    app:layout_constraintTop_toBottomOf="@id/divider_line_5" />
+                    app:layout_constraintTop_toBottomOf="@id/divider_line_5"
+                    android:background="?attr/selectableItemBackground"/>
 
                 <TextView
                     android:id="@+id/divider_line_6"

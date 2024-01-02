@@ -36,6 +36,11 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="mini_title_with_color" parent="mini_title">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="screen_mini_title">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/colorPrimary</item>

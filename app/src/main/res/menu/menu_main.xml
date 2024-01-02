@@ -8,8 +8,8 @@
         android:id="@+id/account"
         android:title="Account" />
     <item
-        android:id="@+id/remove_ads"
-        android:title="Remove Ads" />
+        android:id="@+id/about_app"
+        android:title="About app" />
     <item
         android:id="@+id/search"
         android:title="Search"

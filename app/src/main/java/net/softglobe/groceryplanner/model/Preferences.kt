@@ -65,6 +65,11 @@ class Preferences(context : Context) {
         editor.apply()
     }
 
+    fun setPrivacyPolicyUrl(url : String) {
+        editor.putString(Constants.PRIVACY_POLICY_URL, url)
+        editor.apply()
+    }
+
     fun getAuthToken() : String {
         return preferences.getString(Constants.AUTH_TOKEN, "")!!
     }
@@ -95,6 +100,10 @@ class Preferences(context : Context) {
 
     fun getAnnualDiscountedPriceForPaidVersion() : String {
         return preferences.getString(Constants.ANNUAL_DISCOUNTED_PRICE_FOR_PAID_VERSION, "")!!
+    }
+
+    fun getPrivacyPolicyUrl() : String {
+        return preferences.getString(Constants.PRIVACY_POLICY_URL, "")!!
     }
 
     fun clearAllPreferences() {

@@ -16,7 +16,7 @@
             tools:listitem="@layout/grocery_item"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toTopOf="@id/banner_ad_view"/>
+            app:layout_constraintBottom_toTopOf="@id/banner_ad_view" />
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/banner_ad_view"
@@ -29,18 +29,47 @@
             ads:adUnitId="@string/banner_ad_unit_ad"
             android:visibility="gone"/>
 
-        <TextView
-            android:id="@+id/no_items_text"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No item to display"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            style="@style/grocery_item_subtitle"
-            android:visibility="gone"
-            tools:visibility="visible"/>
+            android:id="@+id/cl_no_items"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/box_icon"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:src="@drawable/no_items_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/no_data_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Items found"
+                app:layout_constraintTop_toBottomOf="@id/box_icon"
+                style="@style/grocery_item_title"
+                app:layout_constraintStart_toStartOf="@id/box_icon"
+                app:layout_constraintEnd_toEndOf="@id/box_icon"
+                android:textStyle="bold"
+                android:textColor="#909090"/>
+            <TextView
+                android:id="@+id/no_data_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click on + button to add a new item"
+                app:layout_constraintTop_toBottomOf="@id/no_data_title"
+                style="@style/mini_title"
+                app:layout_constraintStart_toStartOf="@id/box_icon"
+                app:layout_constraintEnd_toEndOf="@id/box_icon"
+                android:textColor="#909090"
+                android:layout_marginTop="4dp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_add_record"

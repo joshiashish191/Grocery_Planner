@@ -1,8 +1,6 @@
 package net.softglobe.groceryplanner.view
 
 import android.app.AlertDialog
-import android.app.Dialog
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -22,6 +20,7 @@ import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentAccountBinding
 import net.softglobe.groceryplanner.model.LoadingInstance
 import net.softglobe.groceryplanner.model.Preferences
+import net.softglobe.groceryplanner.model.network.NetworkUtils
 import net.softglobe.groceryplanner.model.network.request.BackUpRequest
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
@@ -67,41 +66,47 @@ class AccountFragment : Fragment() {
             binding.txtUpgradePlan.text = resources.getText(R.string.upgrade_plan_description)
         }
 
-        lifecycleScope.launch {
-            try {
-                LoadingInstance.showLoading(requireActivity())
-                val response = viewModel.getUserDetails(preferences.getUserEmail())
-                if (response.isSuccessful && response.body() != null) {
-                    if (!response.body()!!.result.error) {
-                        binding.txtName.text = response.body()!!.user.name
-                        binding.txtEmail.text = response.body()!!.user.email
-                        if (preferences.isPaidUser() && response.body()!!.user.planExpirationDate != null) {
-                            binding.txtPlanExpiry.visibility = View.VISIBLE
-                            binding.txtPlanExpiry.text = "Valid till ${response.body()!!.user.planExpirationDate}"
+        if (NetworkUtils.isNetworkConnected(requireActivity().applicationContext)) {
+            LoadingInstance.showLoading(requireActivity())
+            lifecycleScope.launch {
+                try {
+                    val response = viewModel.getUserDetails(preferences.getUserEmail())
+                    if (response.isSuccessful && response.body() != null) {
+                        if (!response.body()!!.result.error) {
+                            binding.txtName.text = response.body()!!.user.name
+                            binding.txtEmail.text = response.body()!!.user.email
+                            if (preferences.isPaidUser() && response.body()!!.user.planExpirationDate != null) {
+                                binding.txtPlanExpiry.visibility = View.VISIBLE
+                                binding.txtPlanExpiry.text =
+                                    "Valid till ${response.body()!!.user.planExpirationDate}"
+                            }
+                        } else {
+                                Toast.makeText(
+                                    activity,
+                                    response.body()!!.result.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                         }
                     } else {
+                            Toast.makeText(
+                                activity,
+                                "Something went wrong. Please try again",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                    }
+                } catch (e: Exception) {
                         Toast.makeText(
                             activity,
-                            response.body()!!.result.message,
+                            "Something went wrong. Please try again",
                             Toast.LENGTH_SHORT
                         ).show()
-                    }
-                } else {
-                    Toast.makeText(
-                        activity,
-                        "Something went wrong. Please try again",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                } finally {
+                    LoadingInstance.hideLoading()
                 }
-            } catch (e : Exception) {
-                Toast.makeText(
-                    activity,
-                    "Something went wrong. Please try again",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } finally {
-                LoadingInstance.hideLoading()
             }
+        } else {
+            LoadingInstance.hideLoading()
+            NetworkUtils.handleNoInternet(requireActivity())
         }
 
         binding.clPlan.setOnClickListener {
@@ -119,90 +124,29 @@ class AccountFragment : Fragment() {
         }
 
         binding.clImportBackup.setOnClickListener {
-            if (preferences.isPaidUser()) {
-                lifecycleScope.launch {
-                    try {
-                        LoadingInstance.showLoading(requireActivity())
-                        val response = viewModel.importBackupFromServer(preferences.getUserEmail())
-                        if (response.isSuccessful && response.body() != null) {
-                            if (!response.body()!!.error) {
-                                viewModel.clearAllGroceryData()
-                                viewModel.clearAllModifications()
-                                val groceryList = response.body()!!.groceryList
-                                val modificationsList = response.body()!!.modificationsList
-                                if (!groceryList.isNullOrEmpty()) {
-                                    groceryList.forEach { grocery ->
-                                        viewModel.insertGroceryItemOnly(grocery)
-                                    }
-                                }
-                                if (!modificationsList.isNullOrEmpty()) {
-                                    modificationsList.forEach { modification ->
-                                        viewModel.insertModification(modification)
-                                    }
-                                }
-                                Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
-                            }
-                        } else {
-                            Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
-                        }
-                    } catch (e : Exception) {
-                        Log.d("Acc", "$e")
-                        Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
-                    } finally {
-                        LoadingInstance.hideLoading()
-                    }
+            AlertDialog.Builder(requireActivity())
+                .setTitle("Import data from Cloud")
+                .setMessage("This will delete all your local data and replace with the data from cloud. If you have some newly added data that is not yet saved to cloud, then please Save to cloud first. Are you sure you want to import?")
+                .setPositiveButton("Yes") {dialog, position ->
+                    importData()
                 }
-            } else {
-                findNavController().navigate(R.id.action_accountFragment_to_upgradePlanFragment)
-                Toast.makeText(activity, "Please upgrade to use this feature!", Toast.LENGTH_SHORT).show()
-            }
+                .setNegativeButton("Cancel") {dialog, position ->
+                    dialog.dismiss()
+                }
+                .show()
         }
 
         binding.clExportBackup.setOnClickListener {
-            if (preferences.isPaidUser()) {
-                lifecycleScope.launch {
-                    val groceryList = viewModel.getGroceryListWithoutObserver()
-                    val modificationsList =  viewModel.getAllModificationsListWithoutObserver()
-                    val backUpOperationsRequest = BackUpRequest(
-                        groceryList, modificationsList, preferences.getUserEmail(), authToken = preferences.getAuthToken()
-                    )
-                    try {
-                        LoadingInstance.showLoading(requireActivity())
-                        val response = viewModel.backupToServer(backUpOperationsRequest)
-
-                        if (response.isSuccessful && response.body() != null) {
-                            if (!response.body()!!.error) {
-                                Toast.makeText(
-                                    activity, response.body()!!.message, Toast.LENGTH_SHORT
-                                ).show()
-                            } else {
-                                Toast.makeText(
-                                    activity, response.body()!!.message, Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        } else {
-                            Toast.makeText(
-                                activity,
-                                "Something went wrong. Please try again",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    } catch (e: Exception) {
-                        Toast.makeText(
-                            activity,
-                            "Something went wrong. Please try again",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } finally {
-                        LoadingInstance.hideLoading()
-                    }
+            AlertDialog.Builder(requireActivity())
+                .setTitle("Save to Cloud")
+                .setMessage("This will delete all the data you have on the cloud and save this newer one. Are you sure you want to continue?")
+                .setPositiveButton("Yes") {dialog, position ->
+                    exportBackup()
                 }
-            } else {
-                findNavController().navigate(R.id.action_accountFragment_to_upgradePlanFragment)
-                Toast.makeText(activity, "Please upgrade to use this feature!", Toast.LENGTH_SHORT).show()
-            }
+                .setNegativeButton("Cancel") {dialog, position ->
+                    dialog.dismiss()
+                }
+                .show()
         }
 
         binding.txtName.setOnClickListener {
@@ -223,7 +167,6 @@ class AccountFragment : Fragment() {
                 }
                 .setView(view)
                 .show()
-            
         }
     }
 
@@ -255,6 +198,93 @@ class AccountFragment : Fragment() {
             } finally {
                 LoadingInstance.hideLoading()
             }
+        }
+    }
+
+    private fun exportBackup() {
+        if (preferences.isPaidUser()) {
+            lifecycleScope.launch {
+                val groceryList = viewModel.getGroceryListWithoutObserver()
+                val modificationsList =  viewModel.getAllModificationsListWithoutObserver()
+                val backUpOperationsRequest = BackUpRequest(
+                    groceryList, modificationsList, preferences.getUserEmail(), authToken = preferences.getAuthToken()
+                )
+                try {
+                    LoadingInstance.showLoading(requireActivity())
+                    val response = viewModel.backupToServer(backUpOperationsRequest)
+
+                    if (response.isSuccessful && response.body() != null) {
+                        if (!response.body()!!.error) {
+                            Toast.makeText(
+                                activity, response.body()!!.message, Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            Toast.makeText(
+                                activity, response.body()!!.message, Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                        Toast.makeText(
+                            activity,
+                            "Something went wrong. Please try again",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        activity,
+                        "Something went wrong. Please try again",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } finally {
+                    LoadingInstance.hideLoading()
+                }
+            }
+        } else {
+            findNavController().navigate(R.id.action_accountFragment_to_upgradePlanFragment)
+            Toast.makeText(activity, "Please upgrade to use this feature!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun importData() {
+        if (preferences.isPaidUser()) {
+            lifecycleScope.launch {
+                try {
+                    LoadingInstance.showLoading(requireActivity())
+                    val response = viewModel.importBackupFromServer(preferences.getUserEmail())
+                    if (response.isSuccessful && response.body() != null) {
+                        if (!response.body()!!.error) {
+                            viewModel.clearAllGroceryData()
+                            viewModel.clearAllModifications()
+                            val groceryList = response.body()!!.groceryList
+                            val modificationsList = response.body()!!.modificationsList
+                            if (!groceryList.isNullOrEmpty()) {
+                                groceryList.forEach { grocery ->
+                                    viewModel.insertGroceryItemOnly(grocery)
+                                }
+                            }
+                            if (!modificationsList.isNullOrEmpty()) {
+                                modificationsList.forEach { modification ->
+                                    viewModel.insertModification(modification)
+                                }
+                            }
+                            Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e : Exception) {
+                    Log.d("Acc", "$e")
+                    Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
+                } finally {
+                    LoadingInstance.hideLoading()
+                }
+            }
+        } else {
+            findNavController().navigate(R.id.action_accountFragment_to_upgradePlanFragment)
+            Toast.makeText(activity, "Please upgrade to use this feature!", Toast.LENGTH_SHORT).show()
         }
     }
 }

@@ -3,8 +3,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="delete_warning">Do you really want to delete this record? All of its modification details will also be deleted.</string>
     <string name="delete_modification_warning">Do you want to delete this modification entry?</string>
-    <string name="import_description">This imports the database from remote server and replace the existing local data.</string>
-    <string name="export_description">This exports the local data to the remote server, and replace the remote data with this newer one. If you are not sure what to choose, then this is probably the most suitable option.</string>
+    <string name="import_description">This imports all the grocery data from cloud and replace the existing local data.</string>
+    <string name="export_description">This saves the local data to the cloud, and replace the cloud data with this latest one. If you are not sure what to choose, then this is probably the most suitable option.</string>
     <string name="upgrade_plan_description">Upgrade now to enjoy premium features like no ads, server backups and much more at the discounted rates. Click to upgrade now!</string>
     <string name="already_premium_plan_description">You are a proud Premium member! Enjoy the prime benefits.</string>
     <string name="payment_thanks_screen">Thanks for choosing prime membership. Enjoy the Premium benefits!</string>

@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.MobileAds
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.model.Preferences
+import net.softglobe.groceryplanner.model.network.NetworkUtils
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
 
@@ -19,50 +20,68 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                lifecycleScope.launch {
-                    try {
-                        preferences = Preferences(this@MainActivity)
-                        val response = viewModel.getMetadata()
-                        val userMetadataResponse = viewModel.getUserMetadata(preferences.getUserEmail())
-                        if (response.isSuccessful && response.body() != null) {
-                            response.body()?.apply {
-                                preferences.setGroceryRecordsLimitForFree(groceryRecordsLimitForFree)
-                                preferences.setModificationRecordsLimitForFree(modificationRecordsLimitForFree)
-                                preferences.setMonthlyOriginalPriceForPaidVersion(monthlyOriginalPriceForPaidVersion)
-                                preferences.setAnnualOriginalPriceForPaidVersion(annualOriginalPriceForPaidVersion)
-                                preferences.setMonthlyDiscountedPriceForPaidVersion(monthlyDiscountedPriceForPaidVersion)
-                                preferences.setAnnualDiscountedPriceForPaidVersion(annualDiscountedPriceForPaidVersion)
-                            }
-                            if (preferences.isUserLoggedIn()) {
-                                if (userMetadataResponse.isSuccessful && userMetadataResponse.body() != null) {
-                                    userMetadataResponse.body()?.apply {
-                                        if (isPaidUser == 0)
-                                            preferences.setUserPaidStatus(false)
-                                        else
-                                            preferences.setUserPaidStatus(true)
-                                        keepOnSplashScreen = false
+            if (NetworkUtils.isNetworkConnected(this@MainActivity)) {
+                setKeepOnScreenCondition {
+                    lifecycleScope.launch {
+                        try {
+                            preferences = Preferences(this@MainActivity)
+                            val response = viewModel.getMetadata()
+                            val userMetadataResponse =
+                                viewModel.getUserMetadata(preferences.getUserEmail())
+                            if (response.isSuccessful && response.body() != null) {
+                                response.body()?.apply {
+                                    preferences.setGroceryRecordsLimitForFree(
+                                        groceryRecordsLimitForFree
+                                    )
+                                    preferences.setModificationRecordsLimitForFree(
+                                        modificationRecordsLimitForFree
+                                    )
+                                    preferences.setMonthlyOriginalPriceForPaidVersion(
+                                        monthlyOriginalPriceForPaidVersion
+                                    )
+                                    preferences.setAnnualOriginalPriceForPaidVersion(
+                                        annualOriginalPriceForPaidVersion
+                                    )
+                                    preferences.setMonthlyDiscountedPriceForPaidVersion(
+                                        monthlyDiscountedPriceForPaidVersion
+                                    )
+                                    preferences.setAnnualDiscountedPriceForPaidVersion(
+                                        annualDiscountedPriceForPaidVersion
+                                    )
+                                    preferences.setPrivacyPolicyUrl(
+                                        privacyPolicyUrl
+                                    )
+                                }
+                                if (preferences.isUserLoggedIn()) {
+                                    if (userMetadataResponse.isSuccessful && userMetadataResponse.body() != null) {
+                                        userMetadataResponse.body()?.apply {
+                                            if (isPaidUser == 0)
+                                                preferences.setUserPaidStatus(false)
+                                            else
+                                                preferences.setUserPaidStatus(true)
+                                            keepOnSplashScreen = false
+                                        }
                                     }
+                                } else {
+                                    keepOnSplashScreen = false
                                 }
                             } else {
-                                keepOnSplashScreen = false
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "Something went wrong. Please try again",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-                        } else {
+                        } catch (e: Exception) {
                             Toast.makeText(
                                 this@MainActivity,
                                 "Something went wrong. Please try again",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                    } catch (e : Exception) {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Something went wrong. Please try again",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
+                    keepOnSplashScreen
                 }
-                keepOnSplashScreen
             }
         }
         setContentView(R.layout.activity_main)
