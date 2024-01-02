@@ -105,8 +105,15 @@ class AccountFragment : Fragment() {
                 }
             }
         } else {
-            LoadingInstance.hideLoading()
-            NetworkUtils.handleNoInternet(requireActivity())
+            AlertDialog.Builder(context)
+                .setTitle("No Internet")
+                .setMessage("Please connect to the internet to load account details")
+                .setIcon(R.drawable.warning_icon)
+                .setPositiveButton("Ok") { dialog, which ->
+                    findNavController().popBackStack()
+                }
+                .setCancelable(false)
+                .show()
         }
 
         binding.clPlan.setOnClickListener {
@@ -276,7 +283,6 @@ class AccountFragment : Fragment() {
                         Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e : Exception) {
-                    Log.d("Acc", "$e")
                     Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
                 } finally {
                     LoadingInstance.hideLoading()

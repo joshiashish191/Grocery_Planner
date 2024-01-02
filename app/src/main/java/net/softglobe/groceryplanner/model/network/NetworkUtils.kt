@@ -1,13 +1,10 @@
 package net.softglobe.groceryplanner.model.network
 
-import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.NetworkInfo
 import android.os.Build
-import net.softglobe.groceryplanner.R
 
 object NetworkUtils {
 
@@ -30,15 +27,4 @@ object NetworkUtils {
         return false
     }
 
-    fun handleNoInternet(context: Context) {
-        // Your code to handle the no internet case (e.g., show a dialog, display a message)
-        AlertDialog.Builder(context)
-            .setTitle("No Internet")
-            .setMessage("Please connect to the internet to load account details")
-            .setIcon(R.drawable.warning_icon)
-            .setPositiveButton("Ok", DialogInterface.OnClickListener { dialog, which ->
-
-            })
-            .show()
-    }
 }
