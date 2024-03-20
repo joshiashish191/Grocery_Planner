@@ -19,6 +19,7 @@ import net.softglobe.groceryplanner.model.Repository
 import net.softglobe.groceryplanner.model.network.Result
 import net.softglobe.groceryplanner.model.network.RetrofitInstance
 import net.softglobe.groceryplanner.model.network.User
+import net.softglobe.groceryplanner.model.network.response.GrantRewardResponse
 import net.softglobe.groceryplanner.model.network.response.PaymentFetchResponse
 import net.softglobe.groceryplanner.model.network.response.UserMetaDataResponse
 import retrofit2.Response
@@ -174,5 +175,20 @@ class MainViewModel(context: Context) : ViewModel() {
 
     suspend fun updatePaymentDetails(planType : String) : Response<Result> {
         return RetrofitInstance.api.updatePaymentDetails(preferences.getUserEmail(), preferences.getAuthToken(), planType)
+    }
+
+    suspend fun grantReward() : Response<GrantRewardResponse> {
+        return RetrofitInstance.api.grantReward(
+            preferences.getUserEmail(),
+            preferences.getAuthToken()
+        )
+    }
+
+    suspend fun buyWithCoins(planType: String) : Response<Result> {
+        return RetrofitInstance.api.buyWithCoins(
+            preferences.getUserEmail(),
+            preferences.getAuthToken(),
+            planType
+        )
     }
 }

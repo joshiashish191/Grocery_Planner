@@ -17,4 +17,6 @@ object URLs {
     const val USER_OPERATIONS = "user-operations.php"
     const val PAYMENT_FETCH = "payment/payment-fetch.php"
     const val UPDATE_USER_PAYMENT_DETAILS = "payment/update-user-payment-details.php"
+    const val GRANT_REWARD = "grant-reward.php"
+    const val BUY_WITH_COINS = "payment/buy-with-coins.php"
 }

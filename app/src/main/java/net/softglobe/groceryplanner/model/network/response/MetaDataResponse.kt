@@ -8,5 +8,7 @@ data class MetaDataResponse(
     val monthlyDiscountedPriceForPaidVersion : String,
     val annualDiscountedPriceForPaidVersion : String,
     val isPlanActive : Boolean,
-    val privacyPolicyUrl : String
+    val privacyPolicyUrl : String,
+    val coinsForMonthlyPlan : String,
+    val coinsForAnnualPlan : String
 )

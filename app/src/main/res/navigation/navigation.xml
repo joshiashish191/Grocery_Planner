@@ -100,6 +100,9 @@
         <action
             android:id="@+id/action_accountFragment_to_upgradePlanFragment"
             app:destination="@id/upgradePlanFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_upgradePlanWithCoinsFragment"
+            app:destination="@id/upgradePlanWithCoinsFragment" />
     </fragment>
     <fragment
         android:id="@+id/upgradePlanFragment"
@@ -120,4 +123,13 @@
         android:name="net.softglobe.groceryplanner.view.AboutAppFragment"
         android:label="fragment_about_app"
         tools:layout="@layout/fragment_about_app" />
+    <fragment
+        android:id="@+id/upgradePlanWithCoinsFragment"
+        android:name="net.softglobe.groceryplanner.view.UpgradePlanWithCoinsFragment"
+        android:label="UpgradePlanWithCoinsFragment" >
+        <action
+            android:id="@+id/action_upgradePlanWithCoinsFragment_to_paymentSuccessFragment"
+            app:destination="@id/paymentSuccessFragment"
+            app:popUpTo="@id/groceryListFragment" />
+    </fragment>
 </navigation>

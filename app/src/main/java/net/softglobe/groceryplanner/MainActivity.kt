@@ -6,8 +6,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.ads.MobileAds
 import kotlinx.coroutines.launch
+import net.softglobe.groceryplanner.view.AdManager
 import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.model.network.NetworkUtils
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
@@ -51,6 +51,9 @@ class MainActivity : AppCompatActivity() {
                                     preferences.setPrivacyPolicyUrl(
                                         privacyPolicyUrl
                                     )
+
+                                    preferences.setCoinsForMonthlyPlan(coinsForMonthlyPlan)
+                                    preferences.setCoinsForAnnualPlan(coinsForAnnualPlan)
                                 }
                                 if (preferences.isUserLoggedIn()) {
                                     if (userMetadataResponse.isSuccessful && userMetadataResponse.body() != null) {
@@ -85,6 +88,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
         setContentView(R.layout.activity_main)
-        MobileAds.initialize(this) {}
+        AdManager.initializeAd(this)
+        AdManager.getAdRequest()
+        AdManager.loadRewardedAd(this)
     }
 }

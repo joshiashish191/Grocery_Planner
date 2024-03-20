@@ -17,7 +17,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.ads.AdRequest
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentGroceryListBinding
 import net.softglobe.groceryplanner.model.Grocery
@@ -29,7 +28,6 @@ import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
 class GroceryListFragment : Fragment() {
 
     private lateinit var binding : FragmentGroceryListBinding
-
     private val viewModel by viewModels<MainViewModel>{ MainViewModelFactory(activity?.baseContext!!) }
     private lateinit var preferences : Preferences
 
@@ -48,8 +46,7 @@ class GroceryListFragment : Fragment() {
 
         if (!preferences.isPaidUser()) {
             binding.bannerAdView.visibility = View.VISIBLE
-            val adRequest = AdRequest.Builder().build()
-            binding.bannerAdView.loadAd(adRequest)
+            binding.bannerAdView.loadAd(AdManager.getAdRequest())
         }
 
         binding.btnAddRecord.setOnClickListener {

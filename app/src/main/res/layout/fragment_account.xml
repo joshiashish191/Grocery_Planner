@@ -137,6 +137,33 @@
                     android:background="@color/black"
                     app:layout_constraintTop_toBottomOf="@id/txt_email" />
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_coins"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    ads:layout_constraintTop_toBottomOf="@+id/divider_line_2">
+
+                    <TextView
+                        android:id="@+id/profile_txt_coins"
+                        style="@style/mini_title_with_color"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Coins"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/txt_coins"
+                        style="@style/grocery_item_subtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:layout_constraintTop_toBottomOf="@id/profile_txt_coins"
+                        tools:text="100 coins" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <TextView
                     android:id="@+id/backup_txt_subtitle"
                     style="@style/mini_title_with_color"
@@ -144,7 +171,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="Backups"
-                    app:layout_constraintTop_toBottomOf="@id/divider_line_2" />
+                    app:layout_constraintTop_toBottomOf="@id/cl_coins" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_import_backup"

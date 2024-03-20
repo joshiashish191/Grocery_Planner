@@ -70,6 +70,16 @@ class Preferences(context : Context) {
         editor.apply()
     }
 
+    fun setCoinsForMonthlyPlan(coins : String) {
+        editor.putString(Constants.COINS_FOR_MONTHLY_PLAN, coins)
+        editor.apply()
+    }
+
+    fun setCoinsForAnnualPlan(coins : String) {
+        editor.putString(Constants.COINS_FOR_ANNUAL_PLAN, coins)
+        editor.apply()
+    }
+
     fun getAuthToken() : String {
         return preferences.getString(Constants.AUTH_TOKEN, "")!!
     }
@@ -104,6 +114,14 @@ class Preferences(context : Context) {
 
     fun getPrivacyPolicyUrl() : String {
         return preferences.getString(Constants.PRIVACY_POLICY_URL, "")!!
+    }
+
+    fun getCoinsForMonthlyPlan() : String {
+        return preferences.getString(Constants.COINS_FOR_MONTHLY_PLAN, "")!!
+    }
+
+    fun getCoinsForAnnualPlan() : String {
+        return preferences.getString(Constants.COINS_FOR_ANNUAL_PLAN, "")!!
     }
 
     fun clearAllPreferences() {

@@ -6,5 +6,6 @@ data class  User(
     val password : String,
     val authToken: String = "",
     val isPaidUser : Int = 0,
-    val planExpirationDate : String? = null
+    val planExpirationDate : String? = null,
+    val coins : Int = 0
 )

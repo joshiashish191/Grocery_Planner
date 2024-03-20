@@ -3,7 +3,6 @@ package net.softglobe.groceryplanner.view
 import android.app.AlertDialog
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,6 +79,7 @@ class AccountFragment : Fragment() {
                                 binding.txtPlanExpiry.text =
                                     "Valid till ${response.body()!!.user.planExpirationDate}"
                             }
+                            binding.txtCoins.text = response.body()!!.user.coins.toString()
                         } else {
                                 Toast.makeText(
                                     activity,
@@ -118,7 +118,7 @@ class AccountFragment : Fragment() {
 
         binding.clPlan.setOnClickListener {
             if (!preferences.isPaidUser())
-                findNavController().navigate(R.id.action_accountFragment_to_upgradePlanFragment)
+                findNavController().navigate(R.id.action_accountFragment_to_upgradePlanWithCoinsFragment)
         }
 
         binding.txtChangePassword.setOnClickListener {
@@ -248,7 +248,7 @@ class AccountFragment : Fragment() {
                 }
             }
         } else {
-            findNavController().navigate(R.id.action_accountFragment_to_upgradePlanFragment)
+            findNavController().navigate(R.id.action_accountFragment_to_upgradePlanWithCoinsFragment)
             Toast.makeText(activity, "Please upgrade to use this feature!", Toast.LENGTH_SHORT).show()
         }
     }
@@ -289,7 +289,7 @@ class AccountFragment : Fragment() {
                 }
             }
         } else {
-            findNavController().navigate(R.id.action_accountFragment_to_upgradePlanFragment)
+            findNavController().navigate(R.id.action_accountFragment_to_upgradePlanWithCoinsFragment)
             Toast.makeText(activity, "Please upgrade to use this feature!", Toast.LENGTH_SHORT).show()
         }
     }

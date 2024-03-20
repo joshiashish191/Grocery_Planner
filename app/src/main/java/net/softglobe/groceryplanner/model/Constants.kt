@@ -18,4 +18,6 @@ object Constants {
     const val MONTHLY_DISCOUNTED_PRICE_FOR_PAID_VERSION = "monthlyDiscountedPriceForPaidVersion"
     const val ANNUAL_DISCOUNTED_PRICE_FOR_PAID_VERSION = "annualDiscountedPriceForPaidVersion"
     const val PRIVACY_POLICY_URL = "privacyPolicyUrl"
+    const val COINS_FOR_MONTHLY_PLAN = "coinsForMonthlyPlan"
+    const val COINS_FOR_ANNUAL_PLAN = "coinsForAnnualPlan"
 }

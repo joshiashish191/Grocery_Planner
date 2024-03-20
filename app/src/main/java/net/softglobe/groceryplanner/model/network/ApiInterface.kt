@@ -3,6 +3,7 @@ package net.softglobe.groceryplanner.model.network
 import net.softglobe.groceryplanner.model.network.request.BackUpRequest
 import net.softglobe.groceryplanner.model.network.response.MetaDataResponse
 import net.softglobe.groceryplanner.model.URLs
+import net.softglobe.groceryplanner.model.network.response.GrantRewardResponse
 import net.softglobe.groceryplanner.model.network.response.LoginResponse
 import net.softglobe.groceryplanner.model.network.response.PaymentFetchResponse
 import net.softglobe.groceryplanner.model.network.response.UserMetaDataResponse
@@ -65,4 +66,12 @@ interface ApiInterface {
     @FormUrlEncoded
     @POST(URLs.UPDATE_USER_PAYMENT_DETAILS)
     suspend fun updatePaymentDetails(@Field("email") email: String, @Field("authToken") authToken: String, @Field("planType") planType: String,) : Response<Result>
+
+    @FormUrlEncoded
+    @POST(URLs.GRANT_REWARD)
+    suspend fun grantReward(@Field("email") email: String, @Field("authToken") authToken: String) : Response<GrantRewardResponse>
+
+    @FormUrlEncoded
+    @POST(URLs.BUY_WITH_COINS)
+    suspend fun buyWithCoins(@Field("email") email: String, @Field("authToken") authToken: String, @Field("planType") planType: String,) : Response<Result>
 }
