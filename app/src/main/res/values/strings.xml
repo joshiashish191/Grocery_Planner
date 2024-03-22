@@ -11,4 +11,6 @@
     <string name="prime_earn_coins">You can use the coins you earned to redeem the premium plan. You can gain coins by watching video Ads.</string>
     <string name="banner_ad_unit_ad">ca-app-pub-3940256099942544/6300978111</string>
     <string name="rewarded_ad_unit_ad">ca-app-pub-3940256099942544/5224354917</string>
+    <string name="update_available_optional_msg">Grocery Planner has a new update. Please update app for improved experience.</string>
+    <string name="update_available_mandatory_msg">Grocery Planner has a new mandatory update. Please update app to continue using it.</string>
 </resources>

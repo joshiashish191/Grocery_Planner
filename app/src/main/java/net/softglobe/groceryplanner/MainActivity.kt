@@ -1,5 +1,9 @@
 package net.softglobe.groceryplanner
 
+import android.app.AlertDialog
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -17,6 +21,8 @@ class MainActivity : AppCompatActivity() {
     private val viewModel by viewModels<MainViewModel>{ MainViewModelFactory(this) }
     private lateinit var preferences : Preferences
     private var keepOnSplashScreen = true
+    private var updateDialogShown = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().apply {
@@ -91,5 +97,71 @@ class MainActivity : AppCompatActivity() {
         AdManager.initializeAd(this)
         AdManager.getAdRequest()
         AdManager.loadRewardedAd(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (NetworkUtils.isNetworkConnected(this)) {
+            lifecycleScope.launch {
+                try {
+                    preferences = Preferences(this@MainActivity)
+                    val response = viewModel.getMetadata()
+                    if (response.isSuccessful && response.body() != null) {
+                        response.body()?.apply {
+                                showUpdateDialog(
+                                    liveVersionCode,
+                                    isMandatoryUpdate.equals("yes", ignoreCase = true)
+                                )
+                                updateDialogShown = true
+                        }
+                    } else {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Something went wrong. Please try again",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Something went wrong. Please try again",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun showUpdateDialog(liveVersionCode: String, isMandatoryUpdate: Boolean) {
+        if (Integer.parseInt(liveVersionCode) > BuildConfig.VERSION_CODE) {
+            AlertDialog.Builder(this@MainActivity)
+                .setTitle("Update Available")
+                .setMessage(
+                    if (isMandatoryUpdate)
+                    resources.getString(R.string.update_available_mandatory_msg) else
+                    resources.getString(R.string.update_available_optional_msg)
+                )
+                .setPositiveButton("Ok") { dialog, which ->
+                    try {
+                        startActivity(
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("market://details?id=$packageName")
+                            )
+                        )
+                    } catch (e: ActivityNotFoundException) {
+                        startActivity(
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
+                            )
+                        )
+                    }
+                }
+                .setIcon(R.drawable.app_icon)
+                .setCancelable(!isMandatoryUpdate)
+                .show()
+        }
     }
 }

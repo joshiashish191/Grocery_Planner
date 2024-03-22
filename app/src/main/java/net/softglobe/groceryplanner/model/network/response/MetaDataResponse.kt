@@ -10,5 +10,7 @@ data class MetaDataResponse(
     val isPlanActive : Boolean,
     val privacyPolicyUrl : String,
     val coinsForMonthlyPlan : String,
-    val coinsForAnnualPlan : String
+    val coinsForAnnualPlan : String,
+    val liveVersionCode : String,
+    val isMandatoryUpdate : String
 )
