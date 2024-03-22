@@ -155,13 +155,28 @@
                     <TextView
                         android:id="@+id/txt_coins"
                         style="@style/grocery_item_subtitle"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:clickable="true"
                         android:focusable="true"
                         app:layout_constraintTop_toBottomOf="@id/profile_txt_coins"
+                        ads:layout_constraintStart_toStartOf="@id/profile_txt_coins"
                         tools:text="100 coins" />
+
+                    <TextView
+                        android:id="@+id/txt_earn_coins"
+                        style="@style/grocery_item_subtitle_hint"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:layout_constraintTop_toTopOf="@id/txt_coins"
+                        ads:layout_constraintStart_toEndOf="@id/txt_coins"
+                        ads:layout_constraintBottom_toBottomOf="@id/txt_coins"
+                        android:text="Click here to earn more"
+                        android:layout_marginStart="5dp"/>
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView

@@ -46,9 +46,11 @@ class UpgradePlanWithCoinsFragment : Fragment() {
         binding.btnShowAd.setOnClickListener {
             AlertDialog.Builder(context)
                 .setTitle("Gain Coins")
-                .setMessage("Gain more coins and unlock the premium plan! Watching the " +
-                        "video Ad earn coins, which you can use to redeem the " +
-                        "premium plan.")
+                .setMessage(
+                    "Gain more coins and unlock the premium plan! Watching the " +
+                            "video Ad earn coins, which you can use to redeem the " +
+                            "premium plan."
+                )
                 .setIcon(R.drawable.icon_gold_coin)
                 .setPositiveButton("Gain Coin") { dialog, which ->
                     showRewardedAd(requireActivity(), viewModel)

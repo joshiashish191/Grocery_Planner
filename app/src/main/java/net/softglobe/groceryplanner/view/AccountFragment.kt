@@ -1,5 +1,6 @@
 package net.softglobe.groceryplanner.view
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.os.Bundle
 import android.text.TextUtils
@@ -14,7 +15,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentAccountBinding
 import net.softglobe.groceryplanner.model.LoadingInstance
@@ -65,55 +68,33 @@ class AccountFragment : Fragment() {
             binding.txtUpgradePlan.text = resources.getText(R.string.upgrade_plan_description)
         }
 
-        if (NetworkUtils.isNetworkConnected(requireActivity().applicationContext)) {
-            LoadingInstance.showLoading(requireActivity())
-            lifecycleScope.launch {
-                try {
-                    val response = viewModel.getUserDetails(preferences.getUserEmail())
-                    if (response.isSuccessful && response.body() != null) {
-                        if (!response.body()!!.result.error) {
-                            binding.txtName.text = response.body()!!.user.name
-                            binding.txtEmail.text = response.body()!!.user.email
-                            if (preferences.isPaidUser() && response.body()!!.user.planExpirationDate != null) {
-                                binding.txtPlanExpiry.visibility = View.VISIBLE
-                                binding.txtPlanExpiry.text =
-                                    "Valid till ${response.body()!!.user.planExpirationDate}"
-                            }
-                            binding.txtCoins.text = response.body()!!.user.coins.toString()
-                        } else {
-                                Toast.makeText(
-                                    activity,
-                                    response.body()!!.result.message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                        }
-                    } else {
-                            Toast.makeText(
-                                activity,
-                                "Something went wrong. Please try again",
-                                Toast.LENGTH_SHORT
-                            ).show()
+        loadAccountData()
+
+        binding.txtEarnCoins.setOnClickListener {
+            if (NetworkUtils.isNetworkConnected(requireActivity().applicationContext)) {
+                AlertDialog.Builder(context)
+                    .setTitle("Gain Coins")
+                    .setMessage(
+                        "Gain more coins and unlock the premium plan! Watching the " +
+                                "video Ad earn coins, which you can use to redeem the " +
+                                "premium plan."
+                    )
+                    .setIcon(R.drawable.icon_gold_coin)
+                    .setPositiveButton("Gain Coin") { dialog, which ->
+                        showRewardedAd(requireActivity(), viewModel)
                     }
-                } catch (e: Exception) {
-                        Toast.makeText(
-                            activity,
-                            "Something went wrong. Please try again",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                } finally {
-                    LoadingInstance.hideLoading()
-                }
+                    .show()
+            } else {
+                AlertDialog.Builder(context)
+                    .setTitle("No Internet")
+                    .setMessage("Please connect to the internet to load account details")
+                    .setIcon(R.drawable.warning_icon)
+                    .setPositiveButton("Ok") { dialog, which ->
+                        findNavController().popBackStack()
+                    }
+                    .setCancelable(false)
+                    .show()
             }
-        } else {
-            AlertDialog.Builder(context)
-                .setTitle("No Internet")
-                .setMessage("Please connect to the internet to load account details")
-                .setIcon(R.drawable.warning_icon)
-                .setPositiveButton("Ok") { dialog, which ->
-                    findNavController().popBackStack()
-                }
-                .setCancelable(false)
-                .show()
         }
 
         binding.clPlan.setOnClickListener {
@@ -173,6 +154,59 @@ class AccountFragment : Fragment() {
                     dialog.dismiss()
                 }
                 .setView(view)
+                .show()
+        }
+    }
+
+    private fun loadAccountData() {
+        if (NetworkUtils.isNetworkConnected(requireActivity().applicationContext)) {
+            LoadingInstance.showLoading(requireActivity())
+            lifecycleScope.launch {
+                try {
+                    val response = viewModel.getUserDetails(preferences.getUserEmail())
+                    if (response.isSuccessful && response.body() != null) {
+                        if (!response.body()!!.result.error) {
+                            binding.txtName.text = response.body()!!.user.name
+                            binding.txtEmail.text = response.body()!!.user.email
+                            if (preferences.isPaidUser() && response.body()!!.user.planExpirationDate != null) {
+                                binding.txtPlanExpiry.visibility = View.VISIBLE
+                                binding.txtPlanExpiry.text =
+                                    "Valid till ${response.body()!!.user.planExpirationDate}"
+                            }
+                            binding.txtCoins.text = response.body()!!.user.coins.toString()+" coins"
+                        } else {
+                            Toast.makeText(
+                                activity,
+                                response.body()!!.result.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                        Toast.makeText(
+                            activity,
+                            "Something went wrong. Please try again",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        activity,
+                        "Something went wrong. Please try again",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } finally {
+                    LoadingInstance.hideLoading()
+                }
+            }
+        } else {
+            AlertDialog.Builder(context)
+                .setTitle("No Internet")
+                .setMessage("Please connect to the internet to load account details")
+                .setIcon(R.drawable.warning_icon)
+                .setPositiveButton("Ok") { dialog, which ->
+                    findNavController().popBackStack()
+                }
+                .setCancelable(false)
                 .show()
         }
     }
@@ -275,22 +309,92 @@ class AccountFragment : Fragment() {
                                     viewModel.insertModification(modification)
                                 }
                             }
-                            Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT)
+                                .show()
                         } else {
-                            Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(activity, response.body()!!.message, Toast.LENGTH_SHORT)
+                                .show()
                         }
                     } else {
-                        Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            activity,
+                            "Something went wrong. Please try again",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                } catch (e : Exception) {
-                    Toast.makeText(activity, "Something went wrong. Please try again", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        activity,
+                        "Something went wrong. Please try again",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } finally {
                     LoadingInstance.hideLoading()
                 }
             }
         } else {
             findNavController().navigate(R.id.action_accountFragment_to_upgradePlanWithCoinsFragment)
-            Toast.makeText(activity, "Please upgrade to use this feature!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "Please upgrade to use this feature!", Toast.LENGTH_SHORT)
+                .show()
         }
+    }
+
+    private fun showRewardedAd(activity: Activity, viewModel: MainViewModel) {
+        AdManager.getRewardedAd()?.let { ad ->
+            ad.show(activity) { rewardItem ->
+                // Handle the reward.
+                val rewardAmount = rewardItem.amount
+                val rewardType = rewardItem.type
+                lifecycleScope.launch(Dispatchers.IO) {
+                    withContext(Dispatchers.Main) {
+                        LoadingInstance.showLoading(requireActivity())
+                    }
+                    try {
+                        val response = viewModel.grantReward()
+                        if (response.isSuccessful && response.body() != null) {
+                            if (!response.body()!!.result.error) {
+                                withContext(Dispatchers.Main) {
+                                    Toast.makeText(
+                                        activity,
+                                        response.body()!!.result.message,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            } else {
+                                withContext(Dispatchers.Main) {
+                                    Toast.makeText(
+                                        activity,
+                                        response.body()!!.result.message,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(
+                                    activity,
+                                    "Something went wrong. Please try again",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(
+                                activity,
+                                "Something went wrong. Please try again",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } finally {
+                        withContext(Dispatchers.Main) {
+                            LoadingInstance.hideLoading()
+                        }
+                    }
+                }
+            }
+        } ?: run {
+        }
+        AdManager.loadRewardedAd(activity)
     }
 }
