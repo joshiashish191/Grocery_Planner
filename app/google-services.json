@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "12635281113",
+    "project_id": "grocery-planner-5d61d",
+    "storage_bucket": "grocery-planner-5d61d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12635281113:android:c9338468d32f2bf7ce50c8",
+        "android_client_info": {
+          "package_name": "net.softglobe.groceryplanner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoh8v5A-g_-huAeaeqKdSVLgUd3ei4OtU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
