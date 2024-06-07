@@ -20,8 +20,8 @@ android {
         applicationId = "net.softglobe.groceryplanner"
         minSdk = 24
         targetSdk = 33
-        versionCode = 4
-        versionName = "1.3"
+        versionCode = 6
+        versionName = "1.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,7 +34,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "BASE_URL", "\"https://groceryplanner.softglobe.net/api/\"")
+            buildConfigField("String", "BASE_URL", "\"https://digiclass.org.in/groceryplanner/api/\"")
             signingConfig = signingConfigs.getByName("debug")
         }
 
