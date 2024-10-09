@@ -9,8 +9,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".view.UpgradePlanFragment">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/prime_plan_sign"
@@ -53,6 +52,26 @@
                 app:layout_constraintTop_toBottomOf="@+id/prime_earn_coins_text" />
 
             <TextView
+                android:id="@+id/txt_or"
+                style="@style/grocery_item_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="OR"
+                app:layout_constraintTop_toBottomOf="@+id/btn_show_ad" />
+
+            <Button
+                android:id="@+id/btn_show_pricing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Buy Premium Plan"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_or" />
+
+            <TextView
                 android:id="@+id/prime_title"
                 style="@style/grocery_item_subtitle"
                 android:layout_width="wrap_content"
@@ -62,7 +81,7 @@
                 android:text="The Prime Membership comes with lot of benefits as follows:"
                 app:layout_constraintEnd_toEndOf="@+id/prime_earn_coins_text"
                 app:layout_constraintStart_toStartOf="@+id/prime_earn_coins_text"
-                app:layout_constraintTop_toBottomOf="@+id/btn_show_ad" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_show_pricing" />
 
             <TextView
                 android:id="@+id/prime_benefit1"

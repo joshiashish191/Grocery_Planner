@@ -131,5 +131,8 @@
             android:id="@+id/action_upgradePlanWithCoinsFragment_to_paymentSuccessFragment"
             app:destination="@id/paymentSuccessFragment"
             app:popUpTo="@id/groceryListFragment" />
+        <action
+            android:id="@+id/action_upgradePlanWithCoinsFragment_to_upgradePlanFragment"
+            app:destination="@id/upgradePlanFragment" />
     </fragment>
 </navigation>

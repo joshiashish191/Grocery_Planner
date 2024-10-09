@@ -68,6 +68,10 @@ class UpgradePlanWithCoinsFragment : Fragment() {
         binding.btnBuyAnnualPlan.setOnClickListener {
             buyWithCoins("annual")
         }
+
+        binding.btnShowPricing.setOnClickListener {
+            findNavController().navigate(R.id.action_upgradePlanWithCoinsFragment_to_upgradePlanFragment)
+        }
     }
 
     private fun buyWithCoins(planType : String) {

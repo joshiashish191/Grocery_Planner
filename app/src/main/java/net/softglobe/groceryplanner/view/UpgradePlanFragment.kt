@@ -1,5 +1,7 @@
 package net.softglobe.groceryplanner.view
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
@@ -71,19 +73,35 @@ class UpgradePlanFragment : Fragment() {
             "Buy 1 year plan for Only ₹${preferences.getAnnualDiscountedPriceForPaidVersion()}\n (Recommended)"
 
         binding.btnBuyMonthlyPlan.setOnClickListener {
-            lifecycleScope.launch {
-                planType = "monthly"
-                fetchApi()
-                presentPaymentSheet()
-            }
+//            lifecycleScope.launch {
+//                planType = "monthly"
+//                fetchApi()
+//                presentPaymentSheet()
+//            }
+            showPaymentIntegrationInProgressPopup()
         }
         binding.btnBuyAnnualPlan.setOnClickListener {
-            planType = "annual"
-            lifecycleScope.launch {
-                fetchApi()
-                presentPaymentSheet()
-            }
+//            planType = "annual"
+//            lifecycleScope.launch {
+//                fetchApi()
+//                presentPaymentSheet()
+//            }
+            showPaymentIntegrationInProgressPopup()
         }
+    }
+
+    private fun showPaymentIntegrationInProgressPopup() {
+        AlertDialog.Builder(context)
+            .setTitle("Feature In Progress")
+            .setMessage(
+                "This feature is not available yet. The payment gateway integration is in progress and will be available soon." +
+                        "We appreciate your patience. Till then you can watch Ads to gain coins and unlock the prime plan."
+            )
+            .setIcon(R.drawable.warning_icon)
+            .setPositiveButton("OK") { dialog, which ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private suspend fun fetchApi() {
