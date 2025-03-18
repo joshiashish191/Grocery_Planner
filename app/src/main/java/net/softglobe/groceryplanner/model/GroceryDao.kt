@@ -2,12 +2,14 @@ package net.softglobe.groceryplanner.model
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 @Dao
 interface GroceryDao {
 
     @Query("SELECT * FROM Grocery")
-    fun getGroceryList() : LiveData<List<Grocery>>
+    fun getGroceryList() : Flow<List<Grocery>>
 
     @Query("SELECT * FROM Grocery")
     suspend fun getGroceryListWithoutObserver() : List<Grocery>

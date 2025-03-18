@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "net.softglobe.groceryplanner"
-    compileSdk = 34
+    compileSdk = 35
 
     android {
         buildFeatures {
@@ -19,7 +19,7 @@ android {
     defaultConfig {
         applicationId = "net.softglobe.groceryplanner"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 8
         versionName = "1.7"
 
@@ -29,7 +29,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            isDebuggable = false
+            isDebuggable = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -59,7 +59,7 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

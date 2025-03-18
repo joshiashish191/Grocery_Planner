@@ -8,6 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -15,8 +16,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
 import net.softglobe.groceryplanner.databinding.FragmentGroceryListBinding
 import net.softglobe.groceryplanner.model.Grocery
@@ -40,8 +46,13 @@ class GroceryListFragment : Fragment() {
 
     private fun initView() {
         preferences = Preferences(activity?.applicationContext!!)
-        viewModel.getGroceryList().observe(viewLifecycleOwner) {
-            setRecyclerViewForGroceryList(it)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.groceryList.collectLatest { groceryList ->
+                    setRecyclerViewForGroceryList(groceryList)
+                }
+            }
         }
 
         if (!preferences.isPaidUser()) {
@@ -131,6 +142,14 @@ class GroceryListFragment : Fragment() {
                 binding.clNoItems.visibility = View.VISIBLE
             else
                 binding.clNoItems.visibility = View.GONE
+        }
+    }
+
+    private fun <T> AppCompatActivity.collectLatestLifecycleFlow(flow: Flow<T>, collect : suspend (T) -> Unit) {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                flow.collectLatest(collect)
+            }
         }
     }
 }

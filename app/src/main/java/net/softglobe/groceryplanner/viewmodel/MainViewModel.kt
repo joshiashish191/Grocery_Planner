@@ -5,21 +5,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import net.softglobe.groceryplanner.model.network.request.BackUpRequest
-import net.softglobe.groceryplanner.model.network.response.LoginResponse
 import net.softglobe.groceryplanner.model.Grocery
 import net.softglobe.groceryplanner.model.GroceryDao
 import net.softglobe.groceryplanner.model.GroceryDatabase
-import net.softglobe.groceryplanner.model.LoadingInstance
-import net.softglobe.groceryplanner.model.network.response.MetaDataResponse
 import net.softglobe.groceryplanner.model.Modification
 import net.softglobe.groceryplanner.model.Preferences
 import net.softglobe.groceryplanner.model.Repository
 import net.softglobe.groceryplanner.model.network.Result
 import net.softglobe.groceryplanner.model.network.RetrofitInstance
 import net.softglobe.groceryplanner.model.network.User
+import net.softglobe.groceryplanner.model.network.request.BackUpRequest
 import net.softglobe.groceryplanner.model.network.response.GrantRewardResponse
+import net.softglobe.groceryplanner.model.network.response.LoginResponse
+import net.softglobe.groceryplanner.model.network.response.MetaDataResponse
 import net.softglobe.groceryplanner.model.network.response.PaymentFetchResponse
 import net.softglobe.groceryplanner.model.network.response.UserMetaDataResponse
 import retrofit2.Response
@@ -29,14 +30,23 @@ class MainViewModel(context: Context) : ViewModel() {
     private var repository : Repository
     private var preferences : Preferences
 
+    private var _groceryList = MutableStateFlow<List<Grocery>>(emptyList())
+    var groceryList = _groceryList.asStateFlow()
+
     init {
         groceryDao = GroceryDatabase.getInstance(context).groceryDao
         repository = Repository(groceryDao)
         preferences = Preferences(context)
+        getGroceryList()
     }
 
-    fun getGroceryList() : LiveData<List<Grocery>> {
-        return repository.getGroceryList()
+    private fun getGroceryList() {
+        viewModelScope.launch {
+            repository.getGroceryList()
+                .collect{ groceryList ->
+                    _groceryList.value = groceryList
+                }
+        }
     }
 
     suspend fun getGroceryListWithoutObserver() : List<Grocery> {

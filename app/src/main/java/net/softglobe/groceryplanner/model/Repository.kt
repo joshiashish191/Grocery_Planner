@@ -1,10 +1,11 @@
 package net.softglobe.groceryplanner.model
 
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 
 class Repository(private val groceryDao: GroceryDao) {
 
-    fun getGroceryList() : LiveData<List<Grocery>> {
+    fun getGroceryList() : Flow<List<Grocery>> {
         return groceryDao.getGroceryList()
     }
 
