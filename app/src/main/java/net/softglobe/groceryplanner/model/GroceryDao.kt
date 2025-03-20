@@ -36,7 +36,7 @@ interface GroceryDao {
     suspend fun getGroceryItemById(id : Int) : Grocery
 
     @Query("SELECT * FROM Modification WHERE itemId = :id ORDER BY modifiedOn DESC")
-    fun getModificationsList(id :Int) : LiveData<List<Modification>>
+    fun getModificationsList(id :Int) : Flow<List<Modification>>
 
     @Query("SELECT * FROM Grocery WHERE name LIKE '%' ||:query|| '%'")
     fun searchGroceryListByQuery(query: String) : LiveData<List<Grocery>>

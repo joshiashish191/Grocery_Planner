@@ -13,7 +13,7 @@ class Repository(private val groceryDao: GroceryDao) {
         return groceryDao.getGroceryListWithoutObserver()
     }
 
-    fun getModificationsList(id: Int): LiveData<List<Modification>> {
+    fun getModificationsList(id: Int): Flow<List<Modification>> {
         return groceryDao.getModificationsList(id)
     }
 

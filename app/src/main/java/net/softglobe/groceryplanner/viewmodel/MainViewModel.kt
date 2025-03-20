@@ -33,6 +33,9 @@ class MainViewModel(context: Context) : ViewModel() {
     private var _groceryList = MutableStateFlow<List<Grocery>>(emptyList())
     var groceryList = _groceryList.asStateFlow()
 
+    private var _modificationsList = MutableStateFlow<List<Modification>>(emptyList())
+    var modificationsList = _modificationsList.asStateFlow()
+
     init {
         groceryDao = GroceryDatabase.getInstance(context).groceryDao
         repository = Repository(groceryDao)
@@ -53,8 +56,12 @@ class MainViewModel(context: Context) : ViewModel() {
         return repository.getGroceryListWithoutObserver()
     }
 
-    fun getModificationsList(id : Int) : LiveData<List<Modification>> {
-        return repository.getModificationsList(id)
+    fun getModificationsList(id : Int) {
+        viewModelScope.launch {
+            repository.getModificationsList(id).collect { modificationsList ->
+                _modificationsList.value = modificationsList
+            }
+        }
     }
 
     fun insertGroceryItem(grocery: Grocery, modification: Modification) {

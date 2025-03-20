@@ -11,7 +11,9 @@ import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
@@ -75,19 +77,28 @@ class AddGroceryFragment : Fragment() {
                 binding.etQty.setText(item.quantity.toString())
             }
             val itemId = id
-            viewModel.getModificationsList(id!!).observe(viewLifecycleOwner) {
-                if (it.isEmpty()) {
-                    binding.noRecordsTitle.visibility = View.VISIBLE
-                    binding.clrAllModBtn.isEnabled = false
-                }
-                else {
-                    binding.noRecordsTitle.visibility = View.GONE
-                    binding.clrAllModBtn.isEnabled = true
-                }
-                binding.rvModifications.apply {
-                    adapter = ModificationsListAdapter(itemId!!, viewModel)
-                    layoutManager = LinearLayoutManager(activity?.baseContext!!)
-                    (binding.rvModifications.adapter as ModificationsListAdapter).submitList(it)
+
+            if (itemId != null) {
+                viewModel.getModificationsList(itemId)
+            }
+
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.modificationsList.collect { modificationsList ->
+                        if (modificationsList.isEmpty()) {
+                            binding.noRecordsTitle.visibility = View.VISIBLE
+                            binding.clrAllModBtn.isEnabled = false
+                        }
+                        else {
+                            binding.noRecordsTitle.visibility = View.GONE
+                            binding.clrAllModBtn.isEnabled = true
+                        }
+                        binding.rvModifications.apply {
+                            adapter = ModificationsListAdapter(itemId!!, viewModel)
+                            layoutManager = LinearLayoutManager(activity?.baseContext!!)
+                            (binding.rvModifications.adapter as ModificationsListAdapter).submitList(modificationsList)
+                        }
+                    }
                 }
             }
         } else {
