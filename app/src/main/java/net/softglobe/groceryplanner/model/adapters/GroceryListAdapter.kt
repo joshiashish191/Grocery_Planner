@@ -33,7 +33,7 @@ class GroceryListAdapter(private val mContext: Context, private val viewModel: M
             if (TextUtils.isEmpty(grocery.description))
                 binding.itemSubtitle.visibility = View.GONE
             if (grocery.quantity <= grocery.lowStockValue) {
-                binding.lowStockWarning.text = "Only ${grocery.lowStockValue} ${grocery.unit} left"
+                binding.lowStockWarning.text = "Only ${grocery.quantity} ${grocery.unit} left"
                 binding.lowStockWarning.visibility = View.VISIBLE
                 binding.quantity.setTextColor(ContextCompat.getColor(mContext, R.color.red))
             } else {
