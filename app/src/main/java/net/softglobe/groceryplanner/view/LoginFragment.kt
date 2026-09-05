@@ -226,11 +226,11 @@ class LoginFragment : Fragment() {
                             factory = { context ->
                                 AdView(context).apply {
                                     setAdSize(AdSize.BANNER)
-                                    adUnitId = "your-ad-id"
+                                    adUnitId = getString(R.string.banner_ad_unit_ad)
                                     loadAd(AdRequest.Builder().build())
                                 }
                             },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth().weight(1f)
                         )
                     }
 
@@ -239,6 +239,12 @@ class LoginFragment : Fragment() {
         }
     }
 
+    /**
+     * Login user with the provided email and password.
+     * If the login is successful, save the user email, login status, auth token, and paid status in preferences, and navigate to the account fragment.
+     * If the login fails, show a toast message with the error message.
+     * If the email or password is blank, show a toast message asking the user to enter all the fields.
+     */
     private fun loginUser(email: String, password: String) {
         if (email.isNotBlank() && password.isNotBlank()) {
             lifecycleScope.launch {

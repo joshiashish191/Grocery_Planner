@@ -1,15 +1,42 @@
 package net.softglobe.groceryplanner.view
 
 import android.app.AlertDialog
-import android.app.Dialog
-import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.databinding.DataBindingUtil
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -19,15 +46,14 @@ import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
-import net.softglobe.groceryplanner.databinding.FragmentUpgradePlanBinding
 import net.softglobe.groceryplanner.model.LoadingInstance
 import net.softglobe.groceryplanner.model.Preferences
+import net.softglobe.groceryplanner.ui.theme.GroceryPlannerTheme
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
 
 
 class UpgradePlanFragment : Fragment() {
-    lateinit var binding: FragmentUpgradePlanBinding
     private lateinit var preferences: Preferences
     private val viewModel by viewModels<MainViewModel> { MainViewModelFactory(activity?.baseContext!!) }
 
@@ -42,52 +68,188 @@ class UpgradePlanFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(
-            layoutInflater,
-            R.layout.fragment_upgrade_plan, container, false
-        )
         initView()
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                GroceryPlannerTheme {
+                    PlanView()
+                }
+            }
+        }
+    }
+
+    @Preview
+    @Composable
+    private fun PlanView() {
+        Scaffold(
+            modifier = Modifier
+                .fillMaxSize()
+        ) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.premium_member_icon),
+                        contentDescription = "Premium Member Icon",
+                        modifier = Modifier.size(60.dp)
+                    )
+
+                    Text(
+                        text = "Prime Membership",
+                        modifier = Modifier.padding(top = 10.dp),
+                        style = TextStyle(
+                            fontSize = 30.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+
+                    val planMonthlyPrice = buildAnnotatedString {
+                        append("@")
+                        withStyle(
+                            style = SpanStyle(
+                                textDecoration = TextDecoration.LineThrough
+                            )
+                        ) {
+                            append("${preferences.getMonthlyOriginalPriceForPaidVersion()} ")
+                        }
+                        append("Only ₹${preferences.getMonthlyDiscountedPriceForPaidVersion()} / Month")
+                    }
+
+                    Text(
+                        text = planMonthlyPrice,
+                        modifier = Modifier.padding(top = 15.dp),
+                        style = TextStyle(
+                            fontSize = 25.sp,
+                            color = Color.Black
+                        )
+                    )
+
+                    val planAnnualPrice = buildAnnotatedString {
+                        append("@")
+                        withStyle(
+                            style = SpanStyle(
+                                textDecoration = TextDecoration.LineThrough
+                            )
+                        ) {
+                            append("${preferences.getAnnualOriginalPriceForPaidVersion()} ")
+                        }
+                        append("Only ₹${preferences.getAnnualDiscountedPriceForPaidVersion()} / Year")
+                    }
+
+                    Text(
+                        text = planAnnualPrice,
+                        modifier = Modifier.padding(top = 15.dp),
+                        style = TextStyle(
+                            fontSize = 25.sp,
+                            color = Color.Black
+                        )
+                    )
+
+                    Text(
+                        text = "The Prime Membership comes with lot of benefits as follows:",
+                        modifier = Modifier.padding(top = 10.dp),
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            color = Color.Black
+                        )
+                    )
+
+                    val featuresList = mutableListOf(
+                        "Unlimited Grocery Records",
+                        "Unlimited Modifications Records",
+                        "Server Backups",
+                        "Technical Support",
+                        "No Ads"
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
+                        featuresList.forEach { feature ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 5.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.bullet),
+                                    contentDescription = null
+                                )
+                                Text(
+                                    text = feature,
+                                    modifier = Modifier.padding(top = 5.dp),
+                                    style = TextStyle(
+                                        fontSize = 20.sp,
+                                        color = Color.Black
+                                    ),
+                                )
+                            }
+                        }
+                    }
+
+                    Text(
+                        text = "... And much more. Save more by purchasing an Annual Plan!",
+                        modifier = Modifier.padding(top = 8.dp),
+                        style = TextStyle(
+                            fontSize = 25.sp,
+                            color = Color.Black
+                        ),
+                    )
+
+                    Button(
+                        onClick = {
+                            showPaymentIntegrationInProgressPopup()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
+                    ) {
+                        Text(
+                            text = "Buy 1 month plan for Only ₹${preferences.getMonthlyDiscountedPriceForPaidVersion()}",
+                            style = TextStyle(
+                                fontSize = 20.sp,
+                                color = Color.White
+                            )
+                        )
+                    }
+
+                    Button(
+                        onClick = {
+                            showPaymentIntegrationInProgressPopup()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
+                    ) {
+                        Text(
+                            text = "Buy 1 year plan for Only ₹${preferences.getAnnualDiscountedPriceForPaidVersion()} (Recommended)",
+                            style = TextStyle(
+                                fontSize = 20.sp,
+                                color = Color.White
+                            ),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun initView() {
         paymentSheet = PaymentSheet(this, ::onPaymentSheetResult)
-        binding.originalPricePerMonth.paintFlags =
-            binding.originalPricePerMonth.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        binding.originalPricePerYear.paintFlags =
-            binding.originalPricePerMonth.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-
         preferences = Preferences(activity?.applicationContext!!)
-        binding.originalPricePerMonth.text =
-            "@₹${preferences.getMonthlyOriginalPriceForPaidVersion()}"
-        binding.discountedPricePerMonth.text =
-            " Only ₹${preferences.getMonthlyDiscountedPriceForPaidVersion()} / Month"
-        binding.originalPricePerYear.text =
-            "@₹${preferences.getAnnualOriginalPriceForPaidVersion()}"
-        binding.discountedPricePerYear.text =
-            " Only ₹${preferences.getAnnualDiscountedPriceForPaidVersion()} / Year"
-
-        binding.btnBuyMonthlyPlan.text =
-            "Buy 1 month plan for Only ₹${preferences.getMonthlyDiscountedPriceForPaidVersion()}"
-        binding.btnBuyAnnualPlan.text =
-            "Buy 1 year plan for Only ₹${preferences.getAnnualDiscountedPriceForPaidVersion()}\n (Recommended)"
-
-        binding.btnBuyMonthlyPlan.setOnClickListener {
-//            lifecycleScope.launch {
-//                planType = "monthly"
-//                fetchApi()
-//                presentPaymentSheet()
-//            }
-            showPaymentIntegrationInProgressPopup()
-        }
-        binding.btnBuyAnnualPlan.setOnClickListener {
-//            planType = "annual"
-//            lifecycleScope.launch {
-//                fetchApi()
-//                presentPaymentSheet()
-//            }
-            showPaymentIntegrationInProgressPopup()
-        }
     }
 
     private fun showPaymentIntegrationInProgressPopup() {
