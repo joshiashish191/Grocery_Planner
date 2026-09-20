@@ -7,37 +7,79 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.core.widget.doOnTextChanged
-import androidx.databinding.DataBindingUtil
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.softglobe.groceryplanner.R
-import net.softglobe.groceryplanner.databinding.FragmentAddGroceryBinding
 import net.softglobe.groceryplanner.model.Grocery
 import net.softglobe.groceryplanner.model.Modification
 import net.softglobe.groceryplanner.model.Preferences
-import net.softglobe.groceryplanner.model.adapters.ModificationsListAdapter
 import net.softglobe.groceryplanner.viewmodel.MainViewModel
 import net.softglobe.groceryplanner.viewmodel.MainViewModelFactory
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 
 class AddGroceryFragment : Fragment() {
 
-    private lateinit var binding: FragmentAddGroceryBinding
     private lateinit var currentGroceryItem : Grocery
     var id: Int? = null
     private lateinit var preferences : Preferences
     private var totalGroceryItemsCount : Int? = null
+
+    var itemName by  mutableStateOf("")
+    var itemDescription by  mutableStateOf("")
+    var quantity by mutableStateOf("")
+    var unit by mutableStateOf("")
+    var storedAt by mutableStateOf("")
+    var lowStockValue by mutableStateOf("")
+    private var modificationsList by mutableStateOf<List<Modification>>(emptyList())
 
     private val viewModel by viewModels<MainViewModel> { MainViewModelFactory(activity?.baseContext!!) }
 
@@ -46,35 +88,308 @@ class AddGroceryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding =
-            DataBindingUtil.inflate(layoutInflater, R.layout.fragment_add_grocery, container, false)
         inItView()
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                AddGroceryView()
+            }
+        }
+    }
+
+    @Preview
+    @Composable
+    private fun AddGroceryView() {
+        Scaffold(
+            modifier = Modifier.fillMaxSize()
+        ) { innerPadding ->
+            Column (
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    OutlinedTextField(
+                        value = itemName,
+                        onValueChange = {
+                            itemName = it
+                        },
+                        label = { Text("Item Name*") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 5.dp),
+                        singleLine = true
+                    )
+
+                    OutlinedTextField(
+                        value = itemDescription,
+                        onValueChange = {
+                            itemDescription = it
+                        },
+                        label = { Text("Item Description*") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 5.dp),
+                        singleLine = true
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 5.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = quantity,
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            onValueChange = {
+                                quantity = it
+                            },
+                            label = { Text("Quantity*") },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp),
+                            singleLine = true
+                        )
+
+                        OutlinedTextField(
+                            value = unit,
+                            onValueChange = {
+                                unit = it
+                            },
+                            label = { Text("Unit*") },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 8.dp),
+                            singleLine = true
+                        )
+                    }
+
+                    OutlinedTextField(
+                        value = storedAt,
+                        onValueChange = {
+                            storedAt = it
+                        },
+                        label = { Text("Where it is kept") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 5.dp),
+                        singleLine = true
+                    )
+
+                    OutlinedTextField(
+                        value = lowStockValue,
+                        onValueChange = {
+                            lowStockValue = it
+                        },
+                        label = { Text("Low stock indication value") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 5.dp),
+                        singleLine = true
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Button(
+                            shape = RoundedCornerShape(8.dp),
+                            onClick = {
+                                saveGroceryItem()
+                            },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text("Save")
+                        }
+
+                        OutlinedButton(
+                            shape = RoundedCornerShape(8.dp),
+                            onClick = {
+                                checkModificationsOnBackPressed()
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 8.dp)
+                        ) {
+                            Text("Cancel")
+                        }
+                    }
+
+                    if (id != null) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 5.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Last Modifications",
+                                style = TextStyle(
+                                    fontSize = 25.sp,
+                                    color = Color.Black,
+                                )
+                            )
+                            TextButton(
+                                onClick = {
+                                    AlertDialog.Builder(activity)
+                                        .setTitle("Confirm delete")
+                                        .setMessage("Do you really want to clear all the modification records? This action can't be undone!")
+                                        .setPositiveButton("Yes, I confirm") { dialog, position ->
+                                            id?.let { id ->
+                                                viewModel.deleteAllModificationsByGroceryItemId(
+                                                    id
+                                                )
+                                            }
+                                        }
+                                        .setNegativeButton("Cancel") { dialog, position -> }
+                                        .show()
+                                }
+                            ) {
+                                Text(
+                                    text = "CLEAR ALL",
+                                    style = TextStyle(
+                                        fontSize = 15.sp,
+                                        color = colorResource(id = R.color.colorPrimary),
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                )
+                            }
+                        }
+                    }
+                }
+
+                if (id != null) {
+                    if (modificationsList.isNotEmpty()) {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .padding(horizontal = 8.dp)
+                        ) {
+                            items(modificationsList) { modificationRecord ->
+                                ModificationItemView(modificationRecord)
+                            }
+                        }
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            NoRecordsView()
+                        }
+                    }
+                } else {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+
+                if (!preferences.isPaidUser()) {
+                    AndroidView(
+                        factory = { context ->
+                            AdView(context).apply {
+                                setAdSize(AdSize.BANNER)
+                                adUnitId = getString(R.string.banner_ad_unit_ad)
+                                loadAd(AdRequest.Builder().build())
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                    )
+                }
+            }
+        }
+    }
+
+    /**
+    * Modification item layout composable view
+    * */
+    @Composable
+    private fun ModificationItemView(item : Modification) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+            ) {
+                Text(
+                    text = SimpleDateFormat(
+                        "dd/MM/yyyy, HH:mm", Locale.ENGLISH
+                    ).format(item.modifiedOn),
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        color = Color.Black,
+                    )
+                )
+                Text(
+                    text = item.description,
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        color = Color.Black,
+                    )
+                )
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 2.dp)
+                )
+            }
+        }
+    }
+
+
+    /***
+    * No records view composable
+    * */
+    @Preview(showBackground = true)
+    @Composable
+    private fun NoRecordsView() {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "No records found",
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    color = Color.Black,
+                )
+            )
+        }
     }
 
     private fun inItView() {
         preferences = Preferences(activity?.applicationContext!!)
-        if (!preferences.isPaidUser()) {
-            binding.bannerAdView.visibility = View.VISIBLE
-            val adRequest = AdRequest.Builder().build()
-            binding.bannerAdView.loadAd(adRequest)
-        }
 
         arguments?.let {
             id = it.getInt("id")
         }
 
         if (id != null) {
-            binding.modTitle.visibility = View.VISIBLE
-            binding.clrAllModBtn.visibility = View.VISIBLE
-            binding.rvModifications.visibility = View.VISIBLE
             lifecycleScope.launch {
                 val item = viewModel.getGroceryItem(id!!)
                 currentGroceryItem = item
-                binding.grocery = item
-                if (item.lowStockValue != 0.0)
-                    binding.etLowStockValue.setText(item.lowStockValue.toString())
-                binding.etQty.setText(item.quantity.toString())
+                if (item.lowStockValue != 0.0) {
+                    lowStockValue = item.lowStockValue.toString()
+                }
+                itemName = item.name
+                itemDescription = item.description
+                quantity = item.quantity.toString()
+                unit = item.unit
+                storedAt = item.storedAt
             }
             val itemId = id
 
@@ -84,20 +399,8 @@ class AddGroceryFragment : Fragment() {
 
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.modificationsList.collect { modificationsList ->
-                        if (modificationsList.isEmpty()) {
-                            binding.noRecordsTitle.visibility = View.VISIBLE
-                            binding.clrAllModBtn.isEnabled = false
-                        }
-                        else {
-                            binding.noRecordsTitle.visibility = View.GONE
-                            binding.clrAllModBtn.isEnabled = true
-                        }
-                        binding.rvModifications.apply {
-                            adapter = ModificationsListAdapter(itemId!!, viewModel)
-                            layoutManager = LinearLayoutManager(activity?.baseContext!!)
-                            (binding.rvModifications.adapter as ModificationsListAdapter).submitList(modificationsList)
-                        }
+                    viewModel.modificationsList.collect { list ->
+                        modificationsList = list
                     }
                 }
             }
@@ -106,28 +409,6 @@ class AddGroceryFragment : Fragment() {
                 totalGroceryItemsCount = viewModel.getGroceryItemsCount()
             }
         }
-
-        binding.btnSave.setOnClickListener {
-            saveGroceryItem()
-        }
-
-        binding.btnCancel.setOnClickListener {
-            checkModificationsOnBackPressed()
-        }
-
-        binding.clrAllModBtn.setOnClickListener {
-            AlertDialog.Builder(activity)
-                .setTitle("Confirm delete")
-                .setMessage("Do you really want to clear all the modification records? This action can't be undone!")
-                .setPositiveButton("Yes, I confirm") {dialog, position ->
-                    id?.let { id ->
-                        viewModel.deleteAllModificationsByGroceryItemId(id)
-                    }
-                }
-                .setNegativeButton("Cancel") {dialog, position -> }
-                .show()
-        }
-
 
         //region Back pressed event logic
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -138,20 +419,11 @@ class AddGroceryFragment : Fragment() {
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
         //endregion
-
-        callOnTextChangeListeners()
     }
 
     private fun checkModificationsOnBackPressed() {
         if (id != null) {
-            val name = binding.etName.text.toString()
-            val description = binding.etDesc.text.toString()
-            val quantity = binding.etQty.text.toString()
-            val unit = binding.etUnit.text.toString()
-            val keptAt = binding.etKeptAt.text.toString()
-            val lowStockValue = binding.etLowStockValue.text.toString()
-
-            if (isAnyFieldModified(name, description, quantity, unit, keptAt, lowStockValue)
+            if (isAnyFieldModified(itemName, itemDescription, quantity, unit, storedAt, lowStockValue)
             ) {
                 showConfirmChangesDialog()
             } else
@@ -187,7 +459,7 @@ class AddGroceryFragment : Fragment() {
 
     private fun isQuantityModified(quantity :String): Boolean {
         return if (quantity.isBlank()) {
-            return true
+            true
         } else {
             currentGroceryItem.quantity != quantity.toDouble()
         }
@@ -207,23 +479,14 @@ class AddGroceryFragment : Fragment() {
     }
 
     private fun saveGroceryItem() {
-        val name = binding.etName.text.toString().trim()
-        val description = binding.etDesc.text.toString().trim()
-        val quantity = binding.etQty.text.toString().trim()
-        val unit = binding.etUnit.text.toString().trim()
-        val keptAt = binding.etKeptAt.text.toString().trim()
-        val lowStockValue = binding.etLowStockValue.text.toString().trim()
         val modificationMsg: String
 
-        if (name.isBlank()) {
+        if (itemName.isBlank()) {
             Toast.makeText(activity, "Please enter Item Name", Toast.LENGTH_SHORT).show()
-            binding.tilName.error = "Item Name is required"
         } else if (quantity.isBlank()) {
             Toast.makeText(activity, "Please enter Item Quantity", Toast.LENGTH_SHORT).show()
-            binding.tilQty.error = "Quantity is required"
         } else if (unit.isBlank()) {
             Toast.makeText(activity, "Please enter Item Unit", Toast.LENGTH_SHORT).show()
-            binding.tilUnit.error = "Unit is required"
         } else {
             var newLowStockValue = 0.0
             if (lowStockValue.isNotBlank()) {
@@ -245,26 +508,26 @@ class AddGroceryFragment : Fragment() {
                 modificationMsg = "Item Added"
                 viewModel.insertGroceryItem(
                     Grocery(
-                        name,
-                        description,
+                        itemName,
+                        itemDescription,
                         Date(),
                         quantity.toDouble(),
                         unit,
-                        keptAt,
+                        storedAt,
                         newLowStockValue
                     ),
                     Modification(Date(), modificationMsg)
                 )
             } else {
-                modificationMsg = trackModificationsAndCreateEditMessage(name, description, quantity, unit, keptAt, lowStockValue)
+                modificationMsg = trackModificationsAndCreateEditMessage(itemName, itemDescription, quantity, unit, storedAt, lowStockValue)
                 viewModel.insertGroceryItem(
                     Grocery(
-                        name,
-                        description,
+                        itemName,
+                        itemDescription,
                         Date(),
                         quantity.toDouble(),
                         unit,
-                        keptAt,
+                        storedAt,
                         newLowStockValue,
                         id
                     ),
@@ -277,37 +540,16 @@ class AddGroceryFragment : Fragment() {
         }
     }
 
-    private fun callOnTextChangeListeners() {
-        binding.etName.doOnTextChanged { text, start, before, count ->
-            if (count > 0) {
-                binding.tilName.error = null
-                binding.tilName.isErrorEnabled = false
-            }
-        }
-        binding.etQty.doOnTextChanged { text, start, before, count ->
-            if (text?.length!! > 0) {
-                binding.tilDesc.error = null
-                binding.tilDesc.isErrorEnabled = false
-            }
-        }
-        binding.etUnit.doOnTextChanged { text, start, before, count ->
-            if (count > 0) {
-                binding.tilUnit.error = null
-                binding.tilUnit.isErrorEnabled = false
-            }
-        }
-    }
-
     private fun trackModificationsAndCreateEditMessage(
         name: String,
         description: String,
         quantity: String,
         unit: String,
-        keptAt: String,
+        storedAt: String,
         lowStockValue: String
     ): String {
         var result = ""
-        if (!isAnyFieldModified(name, description, quantity, unit, keptAt, lowStockValue)) {
+        if (!isAnyFieldModified(name, description, quantity, unit, storedAt, lowStockValue)) {
             result = "No changes made"
         } else {
             if (!currentGroceryItem.name.equals(name))
@@ -328,19 +570,19 @@ class AddGroceryFragment : Fragment() {
                     result += ", "
                 result += "Item unit modified ${currentGroceryItem.unit} to $unit"
             }
-            if (!currentGroceryItem.storedAt.equals(keptAt)) {
+            if (!currentGroceryItem.storedAt.equals(storedAt)) {
                 if (result.isNotBlank())
                     result += ", "
-                result += "Item stored location modified ${currentGroceryItem.storedAt} to $keptAt"
+                result += "Item stored location modified ${currentGroceryItem.storedAt} to $storedAt"
             }
             if (isLowStockValueModified(lowStockValue)) {
                 if (result.isNotBlank())
                     result += ", "
                 val format = DecimalFormat("0.#")
-                var newLowStockvalue = "0"
+                var newLowStockValue = "0"
                 if (!lowStockValue.isBlank())
-                    newLowStockvalue = format.format(lowStockValue.toDouble())
-                result += "Item low stock value modified ${format.format(currentGroceryItem.lowStockValue)} to $newLowStockvalue"
+                    newLowStockValue = format.format(lowStockValue.toDouble())
+                result += "Item low stock value modified ${format.format(currentGroceryItem.lowStockValue)} to $newLowStockValue"
             }
         }
         return result
