@@ -253,11 +253,6 @@ class RegisterFragment : Fragment() {
                         )
                     }
 
-                    Spacer(
-                        modifier = Modifier
-                            .weight(1f)
-                    )
-
                     if (::preferences.isInitialized && !preferences.isPaidUser()) {
                         AndroidView(
                             factory = { context ->
