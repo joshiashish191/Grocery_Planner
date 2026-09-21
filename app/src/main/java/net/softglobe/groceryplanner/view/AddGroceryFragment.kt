@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -102,210 +103,215 @@ class AddGroceryFragment : Fragment() {
         Scaffold(
             modifier = Modifier.fillMaxSize()
         ) { innerPadding ->
-            Column (
+
+            Card(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
+                    .fillMaxWidth()
+                    .padding(innerPadding)
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .fillMaxSize()
                 ) {
-                    OutlinedTextField(
-                        value = itemName,
-                        onValueChange = {
-                            itemName = it
-                        },
-                        label = { Text("Item Name*") },
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 5.dp),
-                        singleLine = true
-                    )
-
-                    OutlinedTextField(
-                        value = itemDescription,
-                        onValueChange = {
-                            itemDescription = it
-                        },
-                        label = { Text("Item Description*") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 5.dp),
-                        singleLine = true
-                    )
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 5.dp)
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         OutlinedTextField(
-                            value = quantity,
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number
-                            ),
+                            value = itemName,
                             onValueChange = {
-                                quantity = it
+                                itemName = it
                             },
-                            label = { Text("Quantity*") },
+                            label = { Text("Item Name*") },
                             modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 8.dp),
+                                .fillMaxWidth(),
                             singleLine = true
                         )
 
                         OutlinedTextField(
-                            value = unit,
+                            value = itemDescription,
                             onValueChange = {
-                                unit = it
+                                itemDescription = it
                             },
-                            label = { Text("Unit*") },
+                            label = { Text("Item Description*") },
                             modifier = Modifier
-                                .weight(1f)
-                                .padding(start = 8.dp),
+                                .fillMaxWidth()
+                                .padding(top = 5.dp),
                             singleLine = true
                         )
-                    }
 
-                    OutlinedTextField(
-                        value = storedAt,
-                        onValueChange = {
-                            storedAt = it
-                        },
-                        label = { Text("Where it is kept") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 5.dp),
-                        singleLine = true
-                    )
-
-                    OutlinedTextField(
-                        value = lowStockValue,
-                        onValueChange = {
-                            lowStockValue = it
-                        },
-                        label = { Text("Low stock indication value") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 5.dp),
-                        singleLine = true
-                    )
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Button(
-                            shape = RoundedCornerShape(8.dp),
-                            onClick = {
-                                saveGroceryItem()
-                            },
-                            modifier = Modifier.weight(1f)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 5.dp)
                         ) {
-                            Text("Save")
+                            OutlinedTextField(
+                                value = quantity,
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number
+                                ),
+                                onValueChange = {
+                                    quantity = it
+                                },
+                                label = { Text("Quantity*") },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = 8.dp),
+                                singleLine = true
+                            )
+
+                            OutlinedTextField(
+                                value = unit,
+                                onValueChange = {
+                                    unit = it
+                                },
+                                label = { Text("Unit*") },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 8.dp),
+                                singleLine = true
+                            )
                         }
 
-                        OutlinedButton(
-                            shape = RoundedCornerShape(8.dp),
-                            onClick = {
-                                checkModificationsOnBackPressed()
+                        OutlinedTextField(
+                            value = storedAt,
+                            onValueChange = {
+                                storedAt = it
                             },
+                            label = { Text("Where it is kept") },
                             modifier = Modifier
-                                .weight(1f)
-                                .padding(start = 8.dp)
+                                .fillMaxWidth()
+                                .padding(top = 5.dp),
+                            singleLine = true
+                        )
+
+                        OutlinedTextField(
+                            value = lowStockValue,
+                            onValueChange = {
+                                lowStockValue = it
+                            },
+                            label = { Text("Low stock indication value") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 5.dp),
+                            singleLine = true
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("Cancel")
+                            Button(
+                                shape = RoundedCornerShape(8.dp),
+                                onClick = {
+                                    saveGroceryItem()
+                                },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text("Save")
+                            }
+
+                            OutlinedButton(
+                                shape = RoundedCornerShape(8.dp),
+                                onClick = {
+                                    checkModificationsOnBackPressed()
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 8.dp)
+                            ) {
+                                Text("Cancel")
+                            }
+                        }
+
+                        if (id != null) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 5.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Last Modifications",
+                                    style = TextStyle(
+                                        fontSize = 25.sp,
+                                        color = Color.Black,
+                                    )
+                                )
+                                TextButton(
+                                    onClick = {
+                                        AlertDialog.Builder(activity)
+                                            .setTitle("Confirm delete")
+                                            .setMessage("Do you really want to clear all the modification records? This action can't be undone!")
+                                            .setPositiveButton("Yes, I confirm") { dialog, position ->
+                                                id?.let { id ->
+                                                    viewModel.deleteAllModificationsByGroceryItemId(
+                                                        id
+                                                    )
+                                                }
+                                            }
+                                            .setNegativeButton("Cancel") { dialog, position -> }
+                                            .show()
+                                    }
+                                ) {
+                                    Text(
+                                        text = "CLEAR ALL",
+                                        style = TextStyle(
+                                            fontSize = 15.sp,
+                                            color = colorResource(id = R.color.colorPrimary),
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                    )
+                                }
+                            }
                         }
                     }
 
                     if (id != null) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 5.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "Last Modifications",
-                                style = TextStyle(
-                                    fontSize = 25.sp,
-                                    color = Color.Black,
-                                )
-                            )
-                            TextButton(
-                                onClick = {
-                                    AlertDialog.Builder(activity)
-                                        .setTitle("Confirm delete")
-                                        .setMessage("Do you really want to clear all the modification records? This action can't be undone!")
-                                        .setPositiveButton("Yes, I confirm") { dialog, position ->
-                                            id?.let { id ->
-                                                viewModel.deleteAllModificationsByGroceryItemId(
-                                                    id
-                                                )
-                                            }
-                                        }
-                                        .setNegativeButton("Cancel") { dialog, position -> }
-                                        .show()
-                                }
+                        if (modificationsList.isNotEmpty()) {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                                    .padding(horizontal = 8.dp)
                             ) {
-                                Text(
-                                    text = "CLEAR ALL",
-                                    style = TextStyle(
-                                        fontSize = 15.sp,
-                                        color = colorResource(id = R.color.colorPrimary),
-                                        fontWeight = FontWeight.Bold
-                                    ),
-                                )
+                                items(modificationsList) { modificationRecord ->
+                                    ModificationItemView(modificationRecord)
+                                }
                             }
-                        }
-                    }
-                }
-
-                if (id != null) {
-                    if (modificationsList.isNotEmpty()) {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                                .padding(horizontal = 8.dp)
-                        ) {
-                            items(modificationsList) { modificationRecord ->
-                                ModificationItemView(modificationRecord)
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                NoRecordsView()
                             }
                         }
                     } else {
-                        Box(
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+
+                    if (!preferences.isPaidUser()) {
+                        AndroidView(
+                            factory = { context ->
+                                AdView(context).apply {
+                                    setAdSize(AdSize.BANNER)
+                                    adUnitId = getString(R.string.banner_ad_unit_ad)
+                                    loadAd(AdRequest.Builder().build())
+                                }
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .weight(1f),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            NoRecordsView()
-                        }
+                                .wrapContentHeight()
+                        )
                     }
-                } else {
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-
-                if (!preferences.isPaidUser()) {
-                    AndroidView(
-                        factory = { context ->
-                            AdView(context).apply {
-                                setAdSize(AdSize.BANNER)
-                                adUnitId = getString(R.string.banner_ad_unit_ad)
-                                loadAd(AdRequest.Builder().build())
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    )
                 }
             }
         }
